@@ -2,9 +2,9 @@
 
 Maintained fork of [Steven Jianhao Li's Zotero AI Butler](https://github.com/steven-jianhao-li/zotero-AI-Butler), preserving upstream authorship and AGPL licensing. Based on upstream `5df5c62`.
 
-[Download 4.1.0-fork.1](https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.1) · [Security changes and limitations](SECURITY.md) · [Development contracts](docs/development-contracts.md)
+[Download 4.1.0-fork.2](https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.2) · [Security changes and limitations](SECURITY.md) · [Development contracts](docs/development-contracts.md)
 
-This edition improves Markdown/HTML safety, configuration sharing, transport and mindmap export boundaries, and introduces neutral themes, readable local fonts, keyboard focus and restrained motion. Install the XPI through Zotero's add-on manager. It uses the upstream add-on ID and preference namespace, replacing the original extension while retaining existing notes/settings; updates point to this fork.
+This edition improves Markdown/HTML safety, configuration sharing, transport and mindmap export boundaries. Version fork.2 adds consistent local SVG icons, compact metrics, clear reading actions, readable CJK typography and subtle motion. Scanner, task queue and main settings surfaces follow the neutral light/dark theme. Reduced-motion preferences and keyboard focus remain supported. Install the XPI through Zotero's add-on manager. It uses the upstream add-on ID and preference namespace, replacing the original extension while retaining existing notes/settings; updates point to this fork.
 
 ![Native Zotero overview](docs/screenshots/dashboard-light.png)
 
@@ -18,8 +18,8 @@ Upstream feature documentation follows; older screenshots may show the original 
 
 <!-- Badges -->
 <p>
-    <a href="https://github.com/orange4664/zotero-AI-Butler/releases/latest"><img src="https://img.shields.io/github/v/release/steven-jianhao-li/zotero-AI-Butler" alt="Latest Release"></a>
-    <a href="https://github.com/orange4664/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/steven-jianhao-li/zotero-AI-Butler/total.svg" alt="Downloads"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.2"><img src="https://img.shields.io/github/v/release/orange4664/zotero-AI-Butler?include_prereleases" alt="Latest Release"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/orange4664/zotero-AI-Butler/total.svg" alt="Downloads"></a>
     <a href="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github"><img src="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github" alt="Using Zotero Plugin Template"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/stargazers"><img src="https://img.shields.io/github/stars/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Stars"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/network/members"><img src="https://img.shields.io/github/forks/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Forks"></a>

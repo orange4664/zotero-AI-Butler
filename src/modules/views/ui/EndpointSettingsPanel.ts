@@ -697,7 +697,9 @@ export class EndpointSettingsPanel {
       borderRadius: "999px",
       padding: "2px",
       cursor: "pointer",
-      background: endpoint.enabled ? "#4caf50" : "#bdbdbd",
+      background: endpoint.enabled
+        ? "var(--ai-accent)"
+        : "var(--ai-input-border)",
       transition: "background 0.2s ease",
       flex: "0 0 auto",
     });

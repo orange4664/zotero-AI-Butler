@@ -8,6 +8,7 @@
 /**
  * 检测是否为暗色模式
  */
+import { createIcon, type IconName } from "./icons";
 import { getString } from "../../../utils/locale";
 import { sanitizeUntrustedHtml } from "../../../utils/safeHtml";
 
@@ -27,6 +28,21 @@ function isDarkMode(): boolean {
  */
 export type ButtonSize = "small" | "medium" | "large";
 
+/** Sanitized HTML can contain void tags such as <br>. Import inert HTML nodes
+ * instead of reparsing that string with a privileged XML document's parser. */
+function setSafeContent(target: HTMLElement, html: string): void {
+  const doc = target.ownerDocument!;
+  const parsed = doc.implementation.createHTMLDocument("");
+  // createHTMLDocument always creates a body; Gecko types also cover XML documents.
+  const body = parsed.body!;
+  body.innerHTML = sanitizeUntrustedHtml(html);
+  const fragment = doc.createDocumentFragment();
+  for (const node of body.childNodes) {
+    if (node) fragment.appendChild(doc.importNode(node, true));
+  }
+  target.replaceChildren(fragment);
+}
+
 /**
  * 创建带悬停效果的按钮
  *
@@ -39,6 +55,7 @@ export function createStyledButton(
   text: string,
   color: string,
   size: ButtonSize = "medium",
+  icon?: IconName,
 ): HTMLButtonElement {
   const doc = Zotero.getMainWindow().document;
   const button = doc.createElement("button");
@@ -54,7 +71,8 @@ export function createStyledButton(
       : "secondary";
   // Existing callers pass trusted label markup (small icons/emphasis).
   // Sanitize it too, so future callers cannot turn a label into an HTML sink.
-  button.innerHTML = sanitizeUntrustedHtml(text);
+  setSafeContent(button, text);
+  if (icon) button.prepend(createIcon(doc, icon));
   Object.assign(button.style, {
     padding:
       size === "small"
@@ -95,7 +113,7 @@ export function createFormGroup(
   const group = doc.createElement("div");
 
   Object.assign(group.style, {
-    marginBottom: "24px",
+    marginBottom: "20px",
   });
 
   if (label.trim()) {
@@ -567,7 +585,7 @@ export function createNotice(
     color: p.fg,
   });
   el.className = `ai-notice ai-notice--${type}`;
-  el.innerHTML = sanitizeUntrustedHtml(html);
+  setSafeContent(el, html);
   return el;
 }
 

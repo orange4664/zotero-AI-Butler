@@ -1,3 +1,4 @@
+import { createEmptyState } from "./ui/icons";
 /**
  * ================================================================
  * AI 总结视图
@@ -166,7 +167,7 @@ export class SummaryView extends BaseView {
         width: "100%", // 明确宽度
         minWidth: "0",
         overflow: "hidden", // 防止容器本身滚动
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "var(--ai-font-ui)",
       },
     });
 
@@ -322,7 +323,7 @@ export class SummaryView extends BaseView {
     // 底部按钮区域：统一使用 createStyledButton，适配明暗主题
     const queueButton = createStyledButton(
       getString("summary-back-task-queue"),
-      "#59c0bc",
+      "var(--ai-accent)",
       "medium",
     );
     queueButton.id = "ai-butler-queue-button";
@@ -425,7 +426,7 @@ export class SummaryView extends BaseView {
         borderRadius: "4px",
         boxSizing: "border-box",
         resize: "vertical",
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "var(--ai-font-ui)",
         backgroundColor: "var(--ai-input-bg)",
         color: "var(--ai-input-text)",
       },
@@ -1296,13 +1297,13 @@ export class SummaryView extends BaseView {
               welcomeHint.style.cssText = `
                 padding: 20px;
                 margin: 10px 0;
-                background: linear-gradient(135deg, rgba(89, 192, 188, 0.1), rgba(89, 192, 188, 0.05));
+                background: var(--ai-surface-2);
                 border-radius: 8px;
-                border-left: 4px solid #59c0bc;
+                border-left: 4px solid var(--ai-accent);
                 color: var(--ai-text);
               `;
               welcomeHint.innerHTML = `
-                <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px; color: #59c0bc;">
+                <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--ai-accent);">
                   ${getString("summary-chat-welcome-title")}
                 </div>
                 <div style="font-size: 13px; color: var(--ai-text-muted); line-height: 1.6;">
@@ -1798,38 +1799,13 @@ export class SummaryView extends BaseView {
   private showInitialHint(): void {
     if (!this.outputContainer) return;
 
-    const hintContainer = this.createElement("div", {
-      className: "initial-hint",
-      styles: {
-        padding: "40px 20px",
-        textAlign: "center",
-        color: "#999",
-      },
-      children: [
-        this.createElement("div", {
-          styles: {
-            fontSize: "48px",
-            marginBottom: "20px",
-          },
-          textContent: "📝",
-        }),
-        this.createElement("h3", {
-          styles: {
-            fontSize: "18px",
-            color: "#666",
-            marginBottom: "10px",
-          },
-          textContent: getString("summary-waiting-title"),
-        }),
-        this.createElement("p", {
-          styles: {
-            fontSize: "14px",
-            lineHeight: "1.6",
-          },
-          textContent: getString("summary-waiting-description"),
-        }),
-      ],
-    });
+    const hintContainer = createEmptyState(
+      Zotero.getMainWindow().document,
+      "document",
+      getString("summary-waiting-title"),
+      getString("summary-waiting-description"),
+    );
+    hintContainer.classList.add("initial-hint");
 
     this.outputContainer.appendChild(hintContainer);
   }

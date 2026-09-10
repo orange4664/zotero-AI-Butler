@@ -31,6 +31,7 @@ import { getString } from "../../utils/locale";
 import { setPref } from "../../utils/prefs";
 import { showSetupWizard } from "./SetupWizard";
 import { openInteractiveOnboardingTour } from "../onboarding";
+import { createIcon, createEmptyState, type IconName } from "./ui/icons";
 import { createCard, createStyledButton } from "./ui/components";
 
 /**
@@ -218,7 +219,7 @@ export class DashboardView extends BaseView {
   private createHeader(): HTMLElement {
     return this.createElement("div", {
       styles: {
-        padding: "20px 20px 0 20px",
+        padding: "24px 20px 0",
         flexShrink: "0",
       },
       children: [
@@ -226,8 +227,7 @@ export class DashboardView extends BaseView {
           styles: {
             margin: "0 0 20px 0",
             fontSize: "20px",
-            borderBottom: "1px solid var(--ai-border)",
-            paddingBottom: "10px",
+            paddingBottom: "0",
           },
           textContent: getString("dashboard-title"),
         }),
@@ -271,7 +271,7 @@ export class DashboardView extends BaseView {
       id: "status-text",
       styles: {
         fontSize: "24px",
-        fontWeight: "700",
+        fontWeight: "600",
         marginBottom: "10px",
       },
       textContent: getString("dashboard-status-idle"),
@@ -302,184 +302,128 @@ export class DashboardView extends BaseView {
    * @private
    */
   private createStatsSection(): HTMLElement {
-    return this.createElement("div", {
+    const section = this.createElement("div", {
       id: "stats-section",
-      styles: {
-        padding: "0 20px 20px 20px",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-        gap: "15px",
-      },
-      children: [
-        this.createStatCard(
-          "total",
-          getString("dashboard-stat-total"),
-          "0",
-          "#2196f3",
-          "📚",
-        ),
-        this.createStatCard(
-          "today",
-          getString("dashboard-stat-today"),
-          "0",
-          "#4caf50",
-          "📅",
-        ),
-        this.createStatCard(
-          "pending",
-          getString("dashboard-stat-pending"),
-          "0",
-          "#ff9800",
-          "⏳",
-        ),
-        this.createStatCard(
-          "success-rate",
-          getString("dashboard-stat-success-rate"),
-          "—",
-          "#9c27b0",
-          "✨",
-        ),
-        this.createStatCard(
-          "avg-time",
-          getString("dashboard-stat-average-time"),
-          "—",
-          "#607d8b",
-          "⚡",
-        ),
-        this.createStatCard(
-          "failed",
-          getString("dashboard-stat-failed"),
-          "0",
-          "#f44336",
-          "❌",
-        ),
-      ],
+      className: "ai-metrics",
     });
+    const stats = [
+      ["total", "dashboard-stat-total", "0"],
+      ["today", "dashboard-stat-today", "0"],
+      ["pending", "dashboard-stat-pending", "0"],
+      ["success-rate", "dashboard-stat-success-rate", "—"],
+      ["avg-time", "dashboard-stat-average-time", "—"],
+      ["failed", "dashboard-stat-failed", "0"],
+    ] as const;
+    for (const [id, label, value] of stats) {
+      const card = createCard("stat", getString(label), undefined, {
+        value,
+        classes: ["stat-card"],
+      });
+      card.id = `stat-${id}`;
+      section.appendChild(card);
+    }
+    return section;
   }
 
-  /**
-   * 创建统计卡片
-   *
-   * @private
-   */
-  private createStatCard(
-    id: string,
-    label: string,
-    value: string,
-    color: string,
-    icon: string,
-  ): HTMLElement {
-    const card = createCard("stat", label, undefined, {
-      value,
-      classes: ["stat-card"],
-    });
-    // 设置元素 id，便于后续更新
-    card.id = `stat-${id}`;
-    return card;
-  }
-
-  /**
-   * 创建快捷操作区域
-   *
-   * @private
-   */
   private createQuickActions(): HTMLElement {
     const section = this.createElement("div", {
-      styles: {
-        padding: "0 20px 20px 20px",
-      },
+      className: "ai-dashboard-actions",
     });
-
     const title = this.createElement("h3", {
-      styles: {
-        margin: "0 0 15px 0",
-        fontSize: "16px",
-        color: "var(--ai-text)",
-      },
       textContent: getString("dashboard-quick-actions"),
     });
-
     const actionsGrid = this.createElement("div", {
       className: "ai-quick-actions",
-      styles: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-        gap: "12px",
-      },
     });
-
-    const actions = [
+    const tools = this.createElement("div", {
+      className: "ai-dashboard-tools",
+    });
+    const actions: Array<{
+      id: string;
+      icon: IconName;
+      label: string;
+      detail?: string;
+    }> = [
       {
         id: "scan-summary",
-        icon: "🔍",
+        icon: "document",
         label: getString("dashboard-action-scan-summary"),
-        color: "#2196f3",
+        detail: getString("dashboard-summary-description"),
       },
       {
         id: "scan-deep-read",
-        icon: "📚",
+        icon: "book",
         label: getString("dashboard-action-scan-deep-read"),
-        color: "#3f51b5",
-      },
-      {
-        id: "start-auto-scan",
-        icon: "🚀",
-        label: getString("dashboard-action-start-auto-scan"),
-        color: "#4caf50",
-      },
-      {
-        id: "pause-auto-scan",
-        icon: "⏸️",
-        label: getString("dashboard-action-pause-auto-scan"),
-        color: "#ff9800",
+        detail: getString("dashboard-deep-read-description"),
       },
       {
         id: "task-queue",
-        icon: "📋",
+        icon: "queue",
         label: getString("dashboard-action-task-queue"),
-        color: "#9c27b0",
+        detail: getString("dashboard-queue-description"),
+      },
+      {
+        id: "start-auto-scan",
+        icon: "play",
+        label: getString("dashboard-action-start-auto-scan"),
+      },
+      {
+        id: "pause-auto-scan",
+        icon: "pause",
+        label: getString("dashboard-action-pause-auto-scan"),
       },
       {
         id: "clear-completed",
-        icon: "🗑️",
+        icon: "trash",
         label: getString("dashboard-action-clear-completed"),
-        color: "var(--ai-text-muted)",
       },
       {
         id: "open-settings",
-        icon: "⚙️",
+        icon: "settings",
         label: getString("dashboard-action-open-settings"),
-        color: "#607d8b",
       },
       {
         id: "setup",
-        icon: "🧭",
+        icon: "compass",
         label: getString("dashboard-action-setup"),
-        color: "#00a67e",
       },
       {
         id: "onboarding",
-        icon: "🎓",
+        icon: "help",
         label: getString("dashboard-action-onboarding"),
-        color: "#7952b3",
       },
     ];
-
-    actions.forEach((action) => {
+    for (const action of actions) {
       const button = createStyledButton(
         action.label,
-        action.id === "scan-summary" ? "var(--ai-accent)" : "var(--ai-text)",
-        "large",
+        "var(--ai-text)",
+        action.detail ? "large" : "small",
+        action.icon,
       );
-
-      if (action.id === "setup") {
-        button.id = "ai-butler-quick-action-setup";
-      } else if (action.id === "task-queue") {
-        button.id = "ai-butler-quick-action-tasks";
-      } else if (action.id === "onboarding") {
-        button.id = "ai-butler-quick-action-onboarding";
+      button.id = `ai-butler-quick-action-${action.id === "task-queue" ? "tasks" : action.id}`;
+      if (action.detail) {
+        button.classList.add("ai-workflow-action");
+        button.replaceChildren(
+          createIcon(button.ownerDocument!, action.icon, 22),
+        );
+        const copy = this.createElement("span", {
+          className: "ai-workflow-copy",
+        });
+        copy.append(
+          this.createElement("span", {
+            className: "ai-workflow-title",
+            textContent: action.label,
+          }),
+          this.createElement("span", {
+            className: "ai-workflow-detail",
+            textContent: action.detail,
+          }),
+        );
+        const arrow = createIcon(button.ownerDocument!, "arrow", 16);
+        arrow.classList.add("ai-action-arrow");
+        button.append(copy, arrow);
+        button.setAttribute("aria-label", action.label);
       }
-
       button.addEventListener("click", async () => {
         button.disabled = true;
         button.setAttribute("aria-busy", "true");
@@ -500,13 +444,9 @@ export class DashboardView extends BaseView {
           button.removeAttribute("aria-busy");
         }
       });
-
-      actionsGrid.appendChild(button);
-    });
-
-    section.appendChild(title);
-    section.appendChild(actionsGrid);
-
+      (action.detail ? actionsGrid : tools).appendChild(button);
+    }
+    section.append(title, actionsGrid, tools);
     return section;
   }
 
@@ -544,16 +484,7 @@ export class DashboardView extends BaseView {
     });
 
     if (this.recentActivities.length === 0) {
-      const emptyMsg = this.createElement("div", {
-        styles: {
-          textAlign: "center",
-          padding: "40px 20px",
-          color: "var(--ai-text-muted)",
-          fontSize: "14px",
-        },
-        textContent: getString("dashboard-no-recent-activities"),
-      });
-      activityList.appendChild(emptyMsg);
+      activityList.appendChild(this.createActivityEmptyState());
     }
 
     section.appendChild(title);
@@ -681,6 +612,15 @@ export class DashboardView extends BaseView {
    *
    * @private
    */
+  private createActivityEmptyState(): HTMLElement {
+    return createEmptyState(
+      Zotero.getMainWindow().document,
+      "book",
+      getString("dashboard-no-recent-activities"),
+      getString("dashboard-activity-empty-description"),
+    );
+  }
+
   private renderRecentActivities(): void {
     const activityList =
       this.activityContainer?.querySelector("#activity-list");
@@ -689,16 +629,7 @@ export class DashboardView extends BaseView {
     activityList.innerHTML = "";
 
     if (this.recentActivities.length === 0) {
-      const emptyMsg = this.createElement("div", {
-        styles: {
-          textAlign: "center",
-          padding: "40px 20px",
-          color: "var(--ai-text-muted)",
-          fontSize: "14px",
-        },
-        textContent: getString("dashboard-no-recent-activities"),
-      });
-      activityList.appendChild(emptyMsg);
+      activityList.appendChild(this.createActivityEmptyState());
       return;
     }
 
@@ -759,12 +690,22 @@ export class DashboardView extends BaseView {
         textContent: `${activity.duration}s`,
       });
 
-      const statusIcon = this.createElement("span", {
-        styles: {
-          fontSize: "16px",
-        },
-        textContent: activity.status === "success" ? "✅" : "❌",
-      });
+      const statusIcon = createIcon(
+        Zotero.getMainWindow().document,
+        activity.status === "success" ? "check" : "close",
+      );
+      statusIcon.setAttribute(
+        "style",
+        `color: var(--ai-${activity.status === "success" ? "success" : "danger"})`,
+      );
+      rightContent.setAttribute(
+        "aria-label",
+        getString(
+          activity.status === "success"
+            ? "task-queue-status-completed"
+            : "task-queue-status-failed",
+        ),
+      );
 
       rightContent.appendChild(duration);
       rightContent.appendChild(statusIcon);

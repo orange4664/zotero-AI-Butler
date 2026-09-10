@@ -1,12 +1,15 @@
+import { createIcon, type IconName } from "../ui/icons";
+
 export type MainTabDescriptor<T extends string> = {
   id: T;
   label: string;
-  icon: string;
+  icon?: IconName;
 };
 
 export type SettingsNavDescriptor<T extends string> = {
   id: T;
   label: string;
+  icon?: IconName;
 };
 
 export type MainWindowScaffoldRefs<T extends string> = {
@@ -135,6 +138,12 @@ export function createMainWindowScaffold<T extends string>(
   });
 
   topNav.setAttribute("role", "navigation");
+  const brand = createElement(doc, "div", { className: "ai-brand" });
+  brand.append(
+    createIcon(doc, "book", 22),
+    createElement(doc, "span", { textContent: "AI Butler" }),
+  );
+  topNav.appendChild(brand);
   const tabButtons = new Map<T, HTMLElement>();
   for (const tab of tabs) {
     const button = createElement(doc, "button", {
@@ -160,7 +169,8 @@ export function createMainWindowScaffold<T extends string>(
         whiteSpace: "nowrap",
       },
     });
-    button.textContent = tab.label;
+    button.appendChild(createElement(doc, "span", { textContent: tab.label }));
+    if (tab.icon) button.prepend(createIcon(doc, tab.icon));
     button.type = "button";
     button.addEventListener("click", () => onTabClick(tab.id));
     button.addEventListener("mouseenter", () => {
@@ -290,6 +300,8 @@ export function createSettingsScaffold<T extends string>(
         transition: "all 0.2s",
       },
     });
+    button.type = "button";
+    if (category.icon) button.prepend(createIcon(doc, category.icon));
     button.addEventListener("click", () => onCategoryClick(category.id));
     button.addEventListener("mouseenter", () => {
       if (!button.classList.contains("active")) {

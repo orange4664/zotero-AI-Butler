@@ -1,3 +1,4 @@
+import { createIcon } from "./ui/icons";
 /**
  * ================================================================
  * 任务队列视图
@@ -34,7 +35,7 @@ import { BaseView } from "./BaseView";
 import { MainWindow } from "./MainWindow";
 import { TaskQueueManager, TaskItem, TaskStatus, TaskType } from "../taskQueue";
 import { TaskArtifacts } from "../taskArtifacts";
-import { createCard } from "./ui/components";
+import { createCard, createStyledButton } from "./ui/components";
 import { getString } from "../../utils/locale";
 
 // 使用任务队列模块中定义的类型,避免重复定义导致的偏差
@@ -96,7 +97,7 @@ export class TaskQueueView extends BaseView {
         width: "100%",
         // 关键: 允许子元素(任务列表)在 flex 布局中正确计算可滚动高度
         minHeight: "0",
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "var(--ai-font-ui)",
         // 确保容器本身不滚动，滚动由内部 taskListContainer 处理
         overflow: "hidden",
       },
@@ -160,7 +161,7 @@ export class TaskQueueView extends BaseView {
           styles: {
             margin: "0 0 20px 0",
             fontSize: "20px",
-            borderBottom: "2px solid #59c0bc",
+            borderBottom: "1px solid var(--ai-border)",
             paddingBottom: "10px",
           },
           textContent: getString("task-queue-title"),
@@ -194,31 +195,31 @@ export class TaskQueueView extends BaseView {
           "priority",
           getString("task-queue-status-priority"),
           "0",
-          "#ff9800",
+          "var(--ai-warning)",
         ),
         this.createStatCard(
           "processing",
           getString("task-queue-status-processing"),
           "0",
-          "#2196f3",
+          "var(--ai-accent)",
         ),
         this.createStatCard(
           "pending",
           getString("task-queue-status-pending"),
           "0",
-          "#9e9e9e",
+          "var(--ai-text-muted)",
         ),
         this.createStatCard(
           "completed",
           getString("task-queue-status-completed"),
           "0",
-          "#4caf50",
+          "var(--ai-success)",
         ),
         this.createStatCard(
           "failed",
           getString("task-queue-status-failed"),
           "0",
-          "#f44336",
+          "var(--ai-danger)",
         ),
       ],
     });
@@ -313,7 +314,7 @@ export class TaskQueueView extends BaseView {
           borderRadius: "4px",
           backgroundColor: isActive ? "var(--ai-accent-tint)" : "transparent",
           color: "var(--ai-accent)",
-          fontWeight: isActive ? "1000" : "600",
+          fontWeight: isActive ? "600" : "500",
           cursor: "pointer",
           transition: "all 0.2s",
           display: "flex",
@@ -325,12 +326,8 @@ export class TaskQueueView extends BaseView {
 
       (button as HTMLElement).setAttribute("data-status", String(btn.value));
 
-      button.addEventListener("mouseenter", () => {
-        (button as HTMLElement).style.fontWeight = "700";
-      });
-      button.addEventListener("mouseleave", () => {
-        (button as HTMLElement).style.fontWeight = isActive ? "1000" : "600";
-      });
+      button.type = "button";
+      button.setAttribute("aria-pressed", String(isActive));
 
       button.addEventListener("click", () => {
         this.filterTasks(btn.value as TaskStatus | "all");
@@ -352,6 +349,7 @@ export class TaskQueueView extends BaseView {
         color: "var(--ai-input-text)",
       },
       attributes: {
+        "aria-label": getString("task-queue-search-placeholder"),
         placeholder: getString("task-queue-search-placeholder"),
       },
     }) as HTMLInputElement;
@@ -378,6 +376,10 @@ export class TaskQueueView extends BaseView {
       textContent: getString("task-queue-clear-completed"),
     });
 
+    clearCompletedBtn.prepend(
+      createIcon(Zotero.getMainWindow().document, "trash", 16),
+    );
+    clearCompletedBtn.classList.add("ai-button", "ai-button--small");
     clearCompletedBtn.addEventListener("click", async () => {
       await this.clearCompletedTasks();
     });
@@ -421,10 +423,15 @@ export class TaskQueueView extends BaseView {
         const el = b as HTMLElement;
         const val = el.getAttribute("data-type");
         const active = val === this.filterTaskType;
-        el.style.border = active ? "2px solid #9c27b0" : "1px solid #9e9e9e";
-        el.style.backgroundColor = active ? "#f3e5f5" : "transparent";
-        el.style.color = active ? "#9c27b0" : "#666";
-        el.style.fontWeight = active ? "700" : "500";
+        el.style.border = active
+          ? "1px solid var(--ai-accent)"
+          : "1px solid var(--ai-text-muted)";
+        el.style.backgroundColor = active
+          ? "var(--ai-accent-tint)"
+          : "transparent";
+        el.style.color = active ? "var(--ai-accent)" : "var(--ai-text-muted)";
+        el.setAttribute("aria-pressed", String(active));
+        el.style.fontWeight = active ? "600" : "500";
       });
     };
 
@@ -434,10 +441,12 @@ export class TaskQueueView extends BaseView {
         className: `type-filter-btn ${isActive ? "active" : ""}`,
         styles: {
           padding: "8px 16px",
-          border: isActive ? "2px solid #9c27b0" : "1px solid #9e9e9e",
+          border: isActive
+            ? "1px solid var(--ai-accent)"
+            : "1px solid var(--ai-text-muted)",
           borderRadius: "4px",
-          backgroundColor: isActive ? "#f3e5f5" : "transparent",
-          color: isActive ? "#9c27b0" : "#666",
+          backgroundColor: isActive ? "var(--ai-accent-tint)" : "transparent",
+          color: isActive ? "var(--ai-accent)" : "var(--ai-text-muted)",
           fontWeight: isActive ? "700" : "500",
           cursor: "pointer",
           transition: "all 0.2s",
@@ -448,7 +457,9 @@ export class TaskQueueView extends BaseView {
         textContent: btn.label,
       });
 
-      (button as HTMLElement).setAttribute("data-type", String(btn.value));
+      button.setAttribute("data-type", String(btn.value));
+      button.type = "button";
+      button.setAttribute("aria-pressed", String(isActive));
 
       button.addEventListener("click", () => {
         this.filterTaskType =
@@ -526,7 +537,7 @@ export class TaskQueueView extends BaseView {
         styles: {
           textAlign: "center",
           padding: "40px",
-          color: "#9e9e9e",
+          color: "var(--ai-text-muted)",
           fontSize: "14px",
         },
         textContent: getString("task-queue-empty"),
@@ -563,15 +574,10 @@ export class TaskQueueView extends BaseView {
   }
 
   private getTaskStageColor(task: TaskItem): string {
-    if (task.status === TaskStatus.FAILED) return "#f44336";
-    if (task.status === TaskStatus.COMPLETED) return "#4caf50";
-    if (task.status === TaskStatus.PRIORITY) return "#ff9800";
-    const stage = task.stage || "";
-    if (stage.startsWith("mineru")) return "#8b5cf6";
-    if (stage.startsWith("llm")) return "#0ea5e9";
-    if (stage.startsWith("deepread")) return "#3f51b5";
-    if (stage === "saving-note") return "#10b981";
-    return "#2196f3";
+    if (task.status === TaskStatus.FAILED) return "var(--ai-danger)";
+    if (task.status === TaskStatus.COMPLETED) return "var(--ai-success)";
+    if (task.status === TaskStatus.PRIORITY) return "var(--ai-warning)";
+    return "var(--ai-accent)";
   }
 
   private buildTaskStageTooltip(task: TaskItem): string {
@@ -610,13 +616,13 @@ export class TaskQueueView extends BaseView {
         fontSize: "11px",
         padding: "2px 8px",
         borderRadius: "10px",
-        backgroundColor: color + "1f",
+        backgroundColor: "var(--ai-surface-2)",
         color,
         maxWidth: "240px",
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
-        border: "1px solid " + color + "55",
+        border: "1px solid var(--ai-border)",
       },
       textContent: label,
     });
@@ -634,7 +640,7 @@ export class TaskQueueView extends BaseView {
     const progress = Math.max(0, Math.min(100, Math.round(task.progress || 0)));
     const color =
       task.status === TaskStatus.FAILED
-        ? "#f44336"
+        ? "var(--ai-danger)"
         : this.getTaskStageColor(task);
     const label =
       task.status === TaskStatus.FAILED
@@ -663,7 +669,7 @@ export class TaskQueueView extends BaseView {
     const track = this.createElement("div", {
       styles: {
         height: "6px",
-        backgroundColor: color + "22",
+        backgroundColor: "var(--ai-border)",
         borderRadius: "999px",
         overflow: "hidden",
       },
@@ -695,11 +701,11 @@ export class TaskQueueView extends BaseView {
    */
   private createTaskElement(task: TaskItem): HTMLElement {
     const statusColors = {
-      [TaskStatus.PENDING]: "#9e9e9e",
-      [TaskStatus.PROCESSING]: "#2196f3",
-      [TaskStatus.COMPLETED]: "#4caf50",
-      [TaskStatus.FAILED]: "#f44336",
-      [TaskStatus.PRIORITY]: "#ff9800",
+      [TaskStatus.PENDING]: "var(--ai-text-muted)",
+      [TaskStatus.PROCESSING]: "var(--ai-accent)",
+      [TaskStatus.COMPLETED]: "var(--ai-success)",
+      [TaskStatus.FAILED]: "var(--ai-danger)",
+      [TaskStatus.PRIORITY]: "var(--ai-warning)",
     };
 
     const statusLabels = {
@@ -778,105 +784,22 @@ export class TaskQueueView extends BaseView {
     });
     taskStatus.title = this.buildTaskStageTooltip(task);
 
-    // 任务类型标识 (一图总结/思维导图特殊显示)
-    const isSummary = !task.taskType || task.taskType === "summary";
-    const isDeepRead = task.taskType === "deepRead";
-    const isImageSummary = task.taskType === "imageSummary";
-    const isMindmap = task.taskType === "mindmap";
-    const isTargetedQuestion = task.taskType === "targetedQuestion";
-    if (isSummary) {
-      const typeBadge = this.createElement("span", {
-        styles: {
-          fontSize: "11px",
-          padding: "2px 8px",
-          borderRadius: "10px",
-          backgroundColor: "#3f51b5",
-          color: "white",
-          fontWeight: "600",
-          lineHeight: "16px",
-        },
-        textContent: getString("task-queue-type-summary"),
-      });
-      taskHeader.appendChild(typeBadge);
-    }
-    if (isDeepRead) {
-      const typeBadge = this.createElement("span", {
-        styles: {
-          fontSize: "11px",
-          padding: "2px 8px",
-          borderRadius: "10px",
-          backgroundColor: "#3f51b5",
-          color: "white",
-        },
-        textContent: getString("task-queue-type-deep-read"),
-      });
-      taskHeader.appendChild(typeBadge);
-    }
-    if (isImageSummary) {
-      const typeBadge = this.createElement("span", {
-        styles: {
-          fontSize: "11px",
-          padding: "2px 8px",
-          borderRadius: "10px",
-          backgroundColor: "#9c27b0",
-          color: "white",
-        },
-        textContent: getString("task-queue-type-image-summary"),
-      });
-      taskHeader.appendChild(typeBadge);
-    }
-    if (isMindmap) {
-      const typeBadge = this.createElement("span", {
-        styles: {
-          fontSize: "11px",
-          padding: "2px 8px",
-          borderRadius: "10px",
-          backgroundColor: "#4caf50",
-          color: "white",
-        },
-        textContent: getString("task-queue-type-mindmap"),
-      });
-      taskHeader.appendChild(typeBadge);
-    }
-    if (task.taskType === "tableFill") {
-      const typeBadge = this.createElement("span", {
-        styles: {
-          fontSize: "11px",
-          padding: "2px 8px",
-          borderRadius: "10px",
-          backgroundColor: "#ff9800",
-          color: "white",
-        },
-        textContent: getString("task-queue-type-table-fill"),
-      });
-      taskHeader.appendChild(typeBadge);
-    }
-    if (task.taskType === "review") {
-      const typeBadge = this.createElement("span", {
-        styles: {
-          fontSize: "11px",
-          padding: "2px 8px",
-          borderRadius: "10px",
-          backgroundColor: "#2196f3",
-          color: "white",
-        },
-        textContent: getString("task-queue-type-review"),
-      });
-      taskHeader.appendChild(typeBadge);
-    }
-    if (isTargetedQuestion) {
-      const typeBadge = this.createElement("span", {
-        styles: {
-          fontSize: "11px",
-          padding: "2px 8px",
-          borderRadius: "10px",
-          backgroundColor: "#0ea5e9",
-          color: "white",
-        },
-        textContent: getString("task-queue-type-targeted-question"),
-      });
-      taskHeader.appendChild(typeBadge);
-    }
+    const typeLabels = {
+      summary: "task-queue-type-summary",
+      deepRead: "task-queue-type-deep-read",
+      imageSummary: "task-queue-type-image-summary",
+      mindmap: "task-queue-type-mindmap",
+      tableFill: "task-queue-type-table-fill",
+      review: "task-queue-type-review",
+      targetedQuestion: "task-queue-type-targeted-question",
+    } as const;
+    const taskType = task.taskType || "summary";
+    taskHeader.appendChild(
+      this.createElement("span", {
+        className: "ai-pill",
+        textContent: getString(typeLabels[taskType]),
+      }),
+    );
 
     taskHeader.appendChild(taskStatus);
 
@@ -910,7 +833,7 @@ export class TaskQueueView extends BaseView {
       innerHTML: `
         ${getString("task-queue-created-at")}: ${task.createdAt.toLocaleString()}
         ${task.completedAt ? `<br/>${getString("task-queue-completed-at")}: ${task.completedAt.toLocaleString()}` : ""}
-        ${safeError ? `<br/><span style="color: #f44336;">${getString("task-queue-error-label")}: ${safeError}</span>` : ""}
+        ${safeError ? `<br/><span style="color: var(--ai-danger);">${getString("task-queue-error-label")}: ${safeError}</span>` : ""}
         ${task.retryCount > 0 ? `<br/>${getString("task-queue-retry-count")}: ${task.retryCount}` : ""}
         ${safeWorkflowStage ? `<br/><strong style="color: ${this.getTaskStageColor(task)};">${getString("task-queue-stage-label")}: ${safeWorkflowStage}</strong>` : ""}
         ${safeStageDetail ? `<br/><span title="${safeStageDetail}">${getString("task-queue-detail-label")}: ${safeStageDetail}</span>` : ""}
@@ -933,18 +856,12 @@ export class TaskQueueView extends BaseView {
     });
 
     // 详情按钮：打开 AI 总结面板并展示本次调用的流式结果
-    const detailBtn = this.createElement("button", {
-      styles: {
-        padding: "6px 12px",
-        border: "1px solid var(--ai-accent)",
-        borderRadius: "4px",
-        backgroundColor: "transparent",
-        color: "var(--ai-accent)",
-        cursor: "pointer",
-        fontSize: "12px",
-      },
-      textContent: getString("task-queue-action-details"),
-    });
+    const detailBtn = createStyledButton(
+      getString("task-queue-action-details"),
+      "var(--ai-text)",
+      "small",
+      "document",
+    );
     detailBtn.addEventListener("click", async () => {
       // 先取消之前的流式订阅，避免重复
       if (this.detailStreamUnsubscribe) {
@@ -1026,18 +943,12 @@ export class TaskQueueView extends BaseView {
     });
     actions.appendChild(detailBtn);
 
-    const deleteBtn = this.createElement("button", {
-      styles: {
-        padding: "6px 12px",
-        border: "1px solid #f44336",
-        borderRadius: "4px",
-        backgroundColor: "transparent",
-        color: "#f44336",
-        cursor: "pointer",
-        fontSize: "12px",
-      },
-      textContent: getString("task-queue-action-delete"),
-    });
+    const deleteBtn = createStyledButton(
+      getString("task-queue-action-delete"),
+      "#c62828",
+      "small",
+      "trash",
+    );
 
     deleteBtn.addEventListener("click", () => {
       this.deleteTask(task.id);
@@ -1050,19 +961,11 @@ export class TaskQueueView extends BaseView {
         task.taskType === "deepRead") &&
       task.status === TaskStatus.PROCESSING
     ) {
-      const abortBtn = this.createElement("button", {
-        styles: {
-          padding: "6px 12px",
-          border: "1px solid #e53935",
-          borderRadius: "4px",
-          backgroundColor: "#fff5f5",
-          color: "#c62828",
-          cursor: "pointer",
-          fontSize: "12px",
-          fontWeight: "600",
-        },
-        textContent: getString("task-queue-action-abort"),
-      }) as HTMLButtonElement;
+      const abortBtn = createStyledButton(
+        getString("task-queue-action-abort"),
+        "#c62828",
+        "small",
+      );
       abortBtn.title = getString("task-queue-abort-tooltip");
 
       abortBtn.addEventListener("click", async (event: Event) => {
@@ -1077,18 +980,12 @@ export class TaskQueueView extends BaseView {
     }
 
     if (task.status === TaskStatus.FAILED) {
-      const retryBtn = this.createElement("button", {
-        styles: {
-          padding: "6px 12px",
-          border: "1px solid #2196f3",
-          borderRadius: "4px",
-          backgroundColor: "transparent",
-          color: "#2196f3",
-          cursor: "pointer",
-          fontSize: "12px",
-        },
-        textContent: getString("task-queue-action-retry"),
-      });
+      const retryBtn = createStyledButton(
+        getString("task-queue-action-retry"),
+        "var(--ai-text)",
+        "small",
+        "play",
+      );
 
       retryBtn.addEventListener("click", () => {
         this.retryTask(task.id);
@@ -1096,18 +993,11 @@ export class TaskQueueView extends BaseView {
 
       actions.appendChild(retryBtn);
 
-      const copyErrorBtn = this.createElement("button", {
-        styles: {
-          padding: "6px 12px",
-          border: "1px solid #777",
-          borderRadius: "4px",
-          backgroundColor: "transparent",
-          color: "#777",
-          cursor: "pointer",
-          fontSize: "12px",
-        },
-        textContent: getString("task-queue-action-copy-error"),
-      });
+      const copyErrorBtn = createStyledButton(
+        getString("task-queue-action-copy-error"),
+        "var(--ai-text)",
+        "small",
+      );
 
       copyErrorBtn.addEventListener("click", () => {
         void this.copyTextToClipboard(
@@ -1119,18 +1009,11 @@ export class TaskQueueView extends BaseView {
     }
 
     if (task.taskType === "deepRead" && task.status === TaskStatus.COMPLETED) {
-      const completeDeepReadBtn = this.createElement("button", {
-        styles: {
-          padding: "6px 12px",
-          border: "1px solid #2196f3",
-          borderRadius: "4px",
-          backgroundColor: "transparent",
-          color: "#2196f3",
-          cursor: "pointer",
-          fontSize: "12px",
-        },
-        textContent: getString("task-queue-action-complete-deep-read"),
-      }) as HTMLButtonElement;
+      const completeDeepReadBtn = createStyledButton(
+        getString("task-queue-action-complete-deep-read"),
+        "var(--ai-text)",
+        "small",
+      );
       completeDeepReadBtn.title = getString(
         "task-queue-complete-deep-read-tooltip",
       );
@@ -1160,18 +1043,11 @@ export class TaskQueueView extends BaseView {
       task.status === TaskStatus.PENDING ||
       task.status === TaskStatus.FAILED
     ) {
-      const priorityBtn = this.createElement("button", {
-        styles: {
-          padding: "6px 12px",
-          border: "1px solid #ff9800",
-          borderRadius: "4px",
-          backgroundColor: "transparent",
-          color: "#ff9800",
-          cursor: "pointer",
-          fontSize: "12px",
-        },
-        textContent: getString("task-queue-action-prioritize"),
-      });
+      const priorityBtn = createStyledButton(
+        getString("task-queue-action-prioritize"),
+        "var(--ai-text)",
+        "small",
+      );
 
       priorityBtn.addEventListener("click", () => {
         this.prioritizeTask(task.id);
@@ -1359,11 +1235,12 @@ export class TaskQueueView extends BaseView {
         const el = btn as HTMLElement;
         const s = el.getAttribute("data-status");
         const active = String(status) === String(s);
+        el.setAttribute("aria-pressed", String(active));
         if (active) {
           el.classList.add("active");
           el.style.backgroundColor = "var(--ai-accent-tint)";
           el.style.color = "var(--ai-accent)";
-          el.style.fontWeight = "1000";
+          el.style.fontWeight = "600";
         } else {
           el.classList.remove("active");
           el.style.backgroundColor = "transparent";

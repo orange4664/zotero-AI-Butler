@@ -90,20 +90,45 @@ export class SettingsView extends BaseView {
     }
 
     const categories: Array<SettingsNavDescriptor<SettingCategory>> = [
-      { id: "modelPlatform", label: getString("settings-nav-model-platform") },
-      { id: "api", label: getString("settings-nav-api") },
-      { id: "summaryPrompt", label: getString("settings-nav-summary-prompt") },
+      {
+        id: "modelPlatform",
+        icon: "server",
+        label: getString("settings-nav-model-platform"),
+      },
+      { id: "api", icon: "key", label: getString("settings-nav-api") },
+      {
+        id: "summaryPrompt",
+        icon: "document",
+        label: getString("settings-nav-summary-prompt"),
+      },
       {
         id: "deepReadPrompt",
+        icon: "book",
         label: getString("settings-nav-deep-read-prompt"),
       },
-      { id: "tablePrompt", label: getString("settings-nav-table-prompt") },
-      { id: "mindmap", label: getString("settings-nav-mindmap") },
-      { id: "imageSummary", label: getString("settings-nav-image-summary") },
-      { id: "noteExport", label: getString("settings-nav-note-export") },
-      { id: "ui", label: getString("settings-nav-ui") },
-      { id: "data", label: getString("settings-nav-data") },
-      { id: "about", label: getString("settings-nav-about") },
+      {
+        id: "tablePrompt",
+        icon: "table",
+        label: getString("settings-nav-table-prompt"),
+      },
+      {
+        id: "mindmap",
+        icon: "mindmap",
+        label: getString("settings-nav-mindmap"),
+      },
+      {
+        id: "imageSummary",
+        icon: "image",
+        label: getString("settings-nav-image-summary"),
+      },
+      {
+        id: "noteExport",
+        icon: "export",
+        label: getString("settings-nav-note-export"),
+      },
+      { id: "ui", icon: "display", label: getString("settings-nav-ui") },
+      { id: "data", icon: "data", label: getString("settings-nav-data") },
+      { id: "about", icon: "info", label: getString("settings-nav-about") },
     ];
     this.scaffold = createSettingsScaffold(
       this.container,

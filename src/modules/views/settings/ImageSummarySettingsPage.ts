@@ -532,10 +532,10 @@ export class ImageSummarySettingsPage {
     const title = this.createElement("h2", {
       textContent: titleText,
       styles: {
-        color: "#59c0bc",
+        color: "var(--ai-accent)",
         marginBottom: "20px",
         fontSize: "20px",
-        borderBottom: "2px solid #59c0bc",
+        borderBottom: "2px solid var(--ai-accent)",
         paddingBottom: "10px",
       },
     });
@@ -602,9 +602,8 @@ export class ImageSummarySettingsPage {
     Object.assign(panel.style, {
       padding: "16px",
       borderRadius: "14px",
-      border: "1px solid rgba(156, 39, 176, 0.22)",
-      background:
-        "linear-gradient(135deg, rgba(156,39,176,0.08), rgba(255,255,255,0)), var(--ai-surface, #ffffff)",
+      border: "1px solid var(--ai-border)",
+      background: "var(--ai-surface-2)",
       boxShadow: "0 8px 24px rgba(15, 23, 42, 0.05)",
     });
 
@@ -650,9 +649,9 @@ export class ImageSummarySettingsPage {
       borderRadius: "999px",
       fontSize: "11px",
       fontWeight: "700",
-      color: "#7b1fa2",
-      background: "rgba(156, 39, 176, 0.10)",
-      border: "1px solid rgba(156, 39, 176, 0.16)",
+      color: "var(--ai-accent)",
+      background: "var(--ai-accent-tint)",
+      border: "1px solid var(--ai-border)",
     });
     header.appendChild(badge);
     panel.appendChild(header);

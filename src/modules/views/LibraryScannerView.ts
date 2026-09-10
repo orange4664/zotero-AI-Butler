@@ -1,3 +1,5 @@
+import { createIcon } from "./ui/icons";
+import { createStyledButton } from "./ui/components";
 /**
  * ================================================================
  * 库扫描视图
@@ -103,7 +105,7 @@ export class LibraryScannerView extends BaseView {
         width: "100%",
         height: "100%",
         overflow: "hidden",
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "var(--ai-font-ui)",
       },
     });
 
@@ -111,8 +113,8 @@ export class LibraryScannerView extends BaseView {
     const header = this.createElement("div", {
       styles: {
         padding: "20px",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "white",
+        background: "var(--ai-surface)",
+        color: "var(--ai-text)",
         flexShrink: "0",
       },
       children: [
@@ -145,7 +147,7 @@ export class LibraryScannerView extends BaseView {
         minHeight: "0",
         overflow: "auto",
         padding: "15px",
-        background: "#f9f9f9",
+        background: "var(--ai-bg)",
       },
     });
 
@@ -153,11 +155,13 @@ export class LibraryScannerView extends BaseView {
     const footer = this.createElement("div", {
       styles: {
         padding: "15px",
-        borderTop: "1px solid #ddd",
-        background: "#fff",
+        borderTop: "1px solid var(--ai-border)",
+        background: "var(--ai-surface)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: "12px",
         flexShrink: "0",
       },
     });
@@ -166,7 +170,7 @@ export class LibraryScannerView extends BaseView {
     this.selectedCountElement = this.createElement("div", {
       styles: {
         fontSize: "14px",
-        color: "#666",
+        color: "var(--ai-text-muted)",
       },
     });
     this.renderSelectedCountText(0);
@@ -180,37 +184,25 @@ export class LibraryScannerView extends BaseView {
     });
 
     // 取消按钮
-    const cancelButton = this.createElement("button", {
-      styles: {
-        padding: "8px 20px",
-        border: "1px solid #ddd",
-        borderRadius: "4px",
-        background: "#fff",
-        cursor: "pointer",
-        fontSize: "14px",
-      },
-      textContent: getString("common-back"),
-    }) as HTMLButtonElement;
+    const cancelButton = createStyledButton(
+      getString("common-back"),
+      "var(--ai-text)",
+      "medium",
+      "back",
+    );
 
     cancelButton.addEventListener("click", () => {
       MainWindow.getInstance().switchTab("dashboard");
     });
 
     // 确认按钮
-    const confirmButton = this.createElement("button", {
-      id: this.scannerConfirmButtonId,
-      styles: {
-        padding: "8px 20px",
-        border: "none",
-        borderRadius: "4px",
-        background: "#667eea",
-        color: "white",
-        cursor: "pointer",
-        fontSize: "14px",
-        fontWeight: "600",
-      },
-      textContent: getString("library-scanner-add-to-queue"),
-    }) as HTMLButtonElement;
+    const confirmButton = createStyledButton(
+      getString("library-scanner-add-to-queue"),
+      "var(--ai-accent)",
+      "medium",
+      "queue",
+    );
+    confirmButton.id = this.scannerConfirmButtonId;
 
     confirmButton.addEventListener("click", () => {
       this.handleConfirm();
@@ -762,7 +754,7 @@ export class LibraryScannerView extends BaseView {
           padding: "7px 14px",
           border: "1px solid #b00020",
           borderRadius: "4px",
-          backgroundColor: "#fff",
+          backgroundColor: "var(--ai-surface)",
           color: "#b00020",
           cursor: "pointer",
           fontSize: "13px",
@@ -785,7 +777,7 @@ export class LibraryScannerView extends BaseView {
           color: "#b00020",
           fontSize: "14px",
           lineHeight: "1.6",
-          backgroundColor: "#fff",
+          backgroundColor: "var(--ai-surface)",
           border: "1px solid rgba(176, 0, 32, 0.25)",
           borderRadius: "6px",
         },
@@ -809,7 +801,7 @@ export class LibraryScannerView extends BaseView {
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
               userSelect: "text",
-              backgroundColor: "#fff5f6",
+              backgroundColor: "var(--ai-surface-2)",
               border: "1px solid rgba(176, 0, 32, 0.18)",
               borderRadius: "4px",
               color: "#4a1018",
@@ -1094,7 +1086,7 @@ export class LibraryScannerView extends BaseView {
           styles: {
             textAlign: "center",
             padding: "40px",
-            color: "#999",
+            color: "var(--ai-text-muted)",
             fontSize: "16px",
           },
           textContent: getString("library-scanner-empty-message", {
@@ -1125,16 +1117,17 @@ export class LibraryScannerView extends BaseView {
       styles: {
         marginBottom: "15px",
         paddingBottom: "15px",
-        borderBottom: "2px solid #667eea",
+        borderBottom: "1px solid var(--ai-border)",
       },
     });
 
     const content = this.createElement("div", {
+      className: "ai-scanner-row",
       styles: {
         display: "flex",
         alignItems: "center",
         padding: "12px 15px",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "var(--ai-surface)",
         borderRadius: "6px",
         cursor: "pointer",
         transition: "all 0.2s",
@@ -1162,7 +1155,7 @@ export class LibraryScannerView extends BaseView {
         flex: "1",
         fontSize: "16px",
         fontWeight: "600",
-        color: "#fff",
+        color: "var(--ai-text)",
       },
       textContent: getString("library-scanner-select-all-label", {
         args: {
@@ -1172,18 +1165,9 @@ export class LibraryScannerView extends BaseView {
       }),
     });
 
+    checkbox.setAttribute("aria-label", label.textContent || "");
     content.appendChild(checkbox);
     content.appendChild(label);
-
-    // 悬停效果
-    content.addEventListener("mouseenter", () => {
-      content.style.transform = "translateY(-2px)";
-      content.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.4)";
-    });
-    content.addEventListener("mouseleave", () => {
-      content.style.transform = "translateY(0)";
-      content.style.boxShadow = "none";
-    });
 
     // 点击内容也触发复选框
     content.addEventListener("click", (e) => {
@@ -1296,14 +1280,15 @@ export class LibraryScannerView extends BaseView {
     node.element = nodeWrapper;
 
     const nodeContent = this.createElement("div", {
+      className: "ai-scanner-row",
       styles: {
         display: "flex",
         alignItems: "center",
         padding: "8px 10px",
         paddingLeft: `${level * 24 + 10}px`, // 根据层级缩进
-        background: "#fff",
+        background: "var(--ai-surface)",
         borderRadius: "4px",
-        border: "1px solid #e0e0e0",
+        border: "1px solid var(--ai-border)",
         cursor: "pointer",
         transition: "all 0.2s",
         position: "relative",
@@ -1331,7 +1316,7 @@ export class LibraryScannerView extends BaseView {
           top: "50%",
           width: "12px",
           height: "1px",
-          background: "#ccc",
+          background: "var(--ai-border)",
         },
       });
 
@@ -1343,7 +1328,7 @@ export class LibraryScannerView extends BaseView {
           top: "0",
           bottom: "50%",
           width: "1px",
-          background: "#ccc",
+          background: "var(--ai-border)",
         },
       });
 
@@ -1355,24 +1340,23 @@ export class LibraryScannerView extends BaseView {
     // 展开/折叠图标 (仅对有子节点的集合显示)
     let expandIcon: HTMLElement | null = null;
     if (node.type === "collection" && node.children.length > 0) {
-      expandIcon = this.createElement("span", {
-        styles: {
-          marginRight: "8px",
-          fontSize: "12px",
-          color: "#666",
-          cursor: "pointer",
-          userSelect: "none",
-          width: "16px",
-          textAlign: "center",
+      expandIcon = this.createElement("button", {
+        className: "ai-tree-toggle",
+        attributes: {
+          type: "button",
+          "aria-expanded": String(node.expanded),
+          "aria-label": this.toSafeDOMText(node.name, ""),
         },
-        textContent: node.expanded ? "▼" : "▶",
       });
+      expandIcon.appendChild(
+        createIcon(Zotero.getMainWindow().document, "chevron", 16),
+      );
       node.expandIconElement = expandIcon;
 
       expandIcon.addEventListener("click", (e) => {
         e.stopPropagation();
         node.expanded = !node.expanded;
-        expandIcon!.textContent = node.expanded ? "▼" : "▶";
+        expandIcon!.setAttribute("aria-expanded", String(node.expanded));
         this.updateNodeVisibility(node);
         if (node.expanded) {
           this.renderChildren(node, level + 1);
@@ -1399,13 +1383,21 @@ export class LibraryScannerView extends BaseView {
 
     // 图标和名称
     // 使用 textContent 而非 innerHTML，避免论文标题中的特殊字符（如 <, >, &）导致 XML 解析错误
-    const icon = node.type === "collection" ? "📁" : "📄";
+    const icon = createIcon(
+      Zotero.getMainWindow().document,
+      node.type === "collection" ? "folder" : "document",
+      17,
+    );
+    icon.setAttribute(
+      "style",
+      "margin-right: 8px; color: var(--ai-text-muted)",
+    );
     const label = this.createElement("span", {
       styles: {
         flex: "1",
         fontSize: "14px",
       },
-      textContent: this.toSafeDOMText(`${icon} ${node.name}`, icon),
+      textContent: this.toSafeDOMText(node.name, ""),
     });
 
     // 子项数量
@@ -1413,7 +1405,7 @@ export class LibraryScannerView extends BaseView {
       const count = this.createElement("span", {
         styles: {
           fontSize: "12px",
-          color: "#999",
+          color: "var(--ai-text-muted)",
           marginLeft: "10px",
         },
         textContent: `(${node.children.length})`,
@@ -1424,17 +1416,19 @@ export class LibraryScannerView extends BaseView {
     if (expandIcon) {
       nodeContent.appendChild(expandIcon);
     }
+    checkbox.setAttribute("aria-label", this.toSafeDOMText(node.name, ""));
     nodeContent.appendChild(checkbox);
+    nodeContent.appendChild(icon);
     nodeContent.appendChild(label);
 
     // 悬停效果
     nodeContent.addEventListener("mouseenter", () => {
-      nodeContent.style.background = "#f5f5f5";
-      nodeContent.style.borderColor = "#667eea";
+      nodeContent.style.background = "var(--ai-hover)";
+      nodeContent.style.borderColor = "var(--ai-accent)";
     });
     nodeContent.addEventListener("mouseleave", () => {
-      nodeContent.style.background = "#fff";
-      nodeContent.style.borderColor = "#e0e0e0";
+      nodeContent.style.background = "var(--ai-surface)";
+      nodeContent.style.borderColor = "var(--ai-border)";
     });
 
     // 点击节点行展开/折叠或选中
@@ -1450,7 +1444,7 @@ export class LibraryScannerView extends BaseView {
         if (node.type === "collection" && node.children.length > 0) {
           node.expanded = !node.expanded;
           if (expandIcon) {
-            expandIcon.textContent = node.expanded ? "▼" : "▶";
+            expandIcon.setAttribute("aria-expanded", String(node.expanded));
           }
           this.updateNodeVisibility(node);
           if (node.expanded) {
@@ -1473,9 +1467,9 @@ export class LibraryScannerView extends BaseView {
           ...(needsScroll && {
             maxHeight: "400px",
             overflowY: "auto",
-            border: "1px solid #e0e0e0",
+            border: "1px solid var(--ai-border)",
             borderRadius: "4px",
-            backgroundColor: "#fafafa",
+            backgroundColor: "var(--ai-surface-2)",
             padding: "4px",
           }),
         },
@@ -1494,6 +1488,10 @@ export class LibraryScannerView extends BaseView {
    * 更新节点子元素的可见性
    */
   private updateNodeVisibility(node: TreeNode): void {
+    node.expandIconElement?.setAttribute(
+      "aria-expanded",
+      String(node.expanded),
+    );
     if (node.childrenContainer) {
       node.childrenContainer.style.display = node.expanded ? "block" : "none";
       if (node.expanded) {
@@ -1546,7 +1544,7 @@ export class LibraryScannerView extends BaseView {
       this.updateNodeVisibility(node);
       // 更新展开图标
       if (node.expandIconElement) {
-        node.expandIconElement.textContent = "▼";
+        node.expandIconElement.setAttribute("aria-expanded", "true");
       }
       // 展开时进行懒渲染
       this.renderChildren(node, this.getNodeDepth(node));

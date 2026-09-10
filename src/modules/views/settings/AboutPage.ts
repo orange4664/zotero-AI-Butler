@@ -1,3 +1,4 @@
+import { createIcon } from "../ui/icons";
 /**
  * 关于页面
  *
@@ -26,10 +27,10 @@ export class AboutPage {
     const title = doc.createElement("h2");
     title.textContent = getString("settings-about-title");
     Object.assign(title.style, {
-      color: "#59c0bc",
+      color: "var(--ai-accent)",
       marginBottom: "20px",
       fontSize: "20px",
-      borderBottom: "2px solid #59c0bc",
+      borderBottom: "2px solid var(--ai-accent)",
       paddingBottom: "10px",
     });
     this.container.appendChild(title);
@@ -67,7 +68,7 @@ export class AboutPage {
         ${getString("settings-about-intro-line-2")}
       </p>
       <p style="font-size: 14px; color: #666; line-height: 1.8; margin-bottom: 10px;">
-        ${getString("settings-about-intro-line-3-prefix")} <strong style="color: #59c0bc;">Zotero-AI-Butler</strong> ${getString("settings-about-intro-line-3-suffix")}
+        ${getString("settings-about-intro-line-3-prefix")} <strong style="color: var(--ai-accent);">Zotero-AI-Butler</strong> ${getString("settings-about-intro-line-3-suffix")}
       </p>
       <p style="font-size: 14px; color: #666; line-height: 1.8;">
         ${getString("settings-about-intro-line-4")}
@@ -80,7 +81,7 @@ export class AboutPage {
       </p>
     `;
     const introSection = createCard("generic", "", introContent, {
-      accentColor: "#59c0bc",
+      accentColor: "var(--ai-accent)",
     });
     aboutContent.appendChild(introSection);
 
@@ -150,18 +151,13 @@ export class AboutPage {
       color: "var(--ai-text-muted)",
       padding: "8px 14px",
       borderRadius: "999px",
-      background:
-        "linear-gradient(135deg, rgba(89,192,188,0.14), rgba(89,192,188,0.02))",
-      border: "1px solid rgba(89,192,188,0.25)",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.24)",
-      backdropFilter: "blur(12px)",
+      background: "var(--ai-surface-2)",
+      border: "1px solid var(--ai-border)",
       maxWidth: "420px",
-      whiteSpace: "nowrap",
+      whiteSpace: "normal",
     });
 
-    const sloganIcon = doc.createElement("span");
-    sloganIcon.textContent = "✨";
-    sloganIcon.style.color = "#59c0bc";
+    const sloganIcon = createIcon(doc, "book");
 
     const sloganText = doc.createElement("span");
     sloganText.textContent = getString("settings-about-slogan");
@@ -189,10 +185,10 @@ export class AboutPage {
         <strong>${getString("settings-about-info-author")}:</strong> Steven Jianhao Li
       </p>
       <p style="font-size: 14px; color: var(--ai-text-muted); margin: 8px 0;">
-        <strong>GitHub:</strong> <a href="${repoUrl}" target="_blank" style="color: #59c0bc; text-decoration: none;">${repoUrl}</a>
+        <strong>GitHub:</strong> <a href="${repoUrl}" target="_blank" style="color: var(--ai-accent); text-decoration: none;">${repoUrl}</a>
       </p>
       <p style="font-size: 14px; color: var(--ai-text-muted); margin: 8px 0;">
-        <strong>${getString("settings-about-info-feedback")}:</strong> <a href="${repoUrl}/issues" target="_blank" style="color: #59c0bc; text-decoration: none;">${repoUrl}/issues</a>
+        <strong>${getString("settings-about-info-feedback")}:</strong> <a href="${repoUrl}/issues" target="_blank" style="color: var(--ai-accent); text-decoration: none;">${repoUrl}/issues</a>
       </p>
     `;
 

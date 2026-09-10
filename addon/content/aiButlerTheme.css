@@ -2,7 +2,7 @@
 .ai-butler-root,
 .ai-butler-dark {
   --ai-font-ui:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC",
     "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --ai-font-code: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --ai-bg: #f5f6f8;
@@ -71,7 +71,7 @@
   border-radius: 7px;
   line-height: 1.5;
 }
-.ai-butler-root :is(textarea, pre, code) {
+.ai-butler-root :is(pre, code) {
   font-family: var(--ai-font-code);
 }
 .ai-butler-root
@@ -100,14 +100,18 @@
   background: var(--ai-bg) !important;
 }
 #tab-bar {
-  padding: 10px 16px 0;
+  padding: 8px 24px 0;
   gap: 6px;
   background: var(--ai-surface) !important;
   border-bottom: 1px solid var(--ai-border) !important;
   box-shadow: none !important;
   overflow-x: auto;
+  overflow-y: hidden;
 }
 .tab-button {
+  appearance: none !important;
+  height: auto !important;
+  min-height: 42px;
   flex: 0 0 auto !important;
   padding: 11px 20px !important;
   color: var(--ai-text-muted) !important;
@@ -146,7 +150,7 @@
   background: var(--ai-accent-tint) !important;
 }
 #settings-content {
-  padding: 28px 32px 40px !important;
+  padding: 24px 28px 32px !important;
 }
 
 .ai-button {
@@ -288,17 +292,17 @@
 }
 
 #ai-butler-dashboard-view {
-  padding: 8px clamp(0px, 2vw, 28px) 24px;
+  padding: 0 clamp(0px, 2vw, 28px) 24px;
   box-sizing: border-box;
   background: var(--ai-bg);
 }
 #ai-butler-dashboard-view h2 {
-  font-size: 23px !important;
+  font-size: 25px !important;
   font-weight: 650;
   letter-spacing: -0.3px;
 }
 #butler-status-card {
-  padding: 24px 28px !important;
+  padding: 20px 24px !important;
 }
 #butler-status-card #status-detail {
   color: var(--ai-text-muted);
@@ -314,8 +318,9 @@
   background: var(--ai-danger) !important;
 }
 #stats-section {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 12px !important;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 0 !important;
 }
 .ai-quick-actions {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -328,7 +333,7 @@
   max-height: none !important;
   padding: 0 !important;
 }
-#view-container > * {
+#view-container > .ai-view-active {
   animation: ai-view-enter 180ms ease-out;
 }
 @keyframes ai-view-enter {
@@ -379,9 +384,14 @@
   #settings-content {
     padding: 20px 16px 32px !important;
   }
-  #stats-section,
+  #stats-section {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
   .ai-quick-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .ai-brand {
+    display: none !important;
   }
   #butler-status-card {
     padding: 20px !important;
@@ -401,6 +411,8 @@
 .ai-butler-root .ai-button {
   appearance: none !important;
   min-height: 38px !important;
+  height: auto !important;
+  max-height: none !important;
   padding: 8px 14px !important;
   box-sizing: border-box;
 }
@@ -426,4 +438,218 @@
 }
 #butler-status-card #status-detail {
   grid-column: 2;
+}
+
+/* Shared local icon rhythm and reading workspace hierarchy. */
+.ai-icon {
+  flex: 0 0 auto;
+  vertical-align: middle;
+  pointer-events: none;
+}
+.ai-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  padding: 0 24px 8px 0;
+  font-size: 16px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.ai-brand > .ai-icon {
+  color: var(--ai-accent);
+}
+.settings-nav-button {
+  gap: 10px;
+}
+#ai-butler-dashboard-view > * {
+  flex-shrink: 0;
+}
+#ai-butler-dashboard-view #status-text {
+  font-size: 19px;
+}
+#ai-butler-dashboard-view .ai-metrics {
+  margin: 0 20px 24px;
+  padding: 0;
+  border-block: 1px solid var(--ai-border);
+}
+#stats-section .stat-card {
+  padding: 16px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+#stats-section .ai-card__header {
+  margin-bottom: 8px;
+}
+#stats-section .ai-card__title {
+  font-size: 12px;
+}
+#stats-section .ai-card__value {
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.ai-dashboard-actions {
+  padding: 0 20px 24px;
+}
+.ai-dashboard-actions h3 {
+  margin: 0 0 12px;
+}
+.ai-quick-actions {
+  display: grid;
+  gap: 12px;
+}
+.ai-butler-root .ai-workflow-action {
+  display: grid;
+  min-height: 116px !important;
+  grid-template-columns: 24px minmax(0, 1fr) 16px;
+  align-items: start;
+  text-align: left;
+  padding: 20px 16px !important;
+  gap: 12px;
+  border-radius: 10px;
+}
+.ai-workflow-action > .ai-icon {
+  margin-top: 2px;
+  color: var(--ai-accent);
+}
+.ai-workflow-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ai-workflow-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.ai-workflow-detail {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ai-text-muted);
+  font-weight: 400;
+}
+.ai-action-arrow {
+  transition: transform 160ms ease-out;
+}
+.ai-workflow-action:hover .ai-action-arrow {
+  transform: translateX(3px);
+}
+.ai-dashboard-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.ai-butler-root .ai-dashboard-tools .ai-button {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--ai-text-muted) !important;
+}
+.ai-butler-root .ai-dashboard-tools .ai-button:hover {
+  background: var(--ai-hover) !important;
+  color: var(--ai-text) !important;
+}
+.ai-empty-state {
+  padding: 28px 20px;
+  color: var(--ai-text-muted);
+  text-align: center;
+}
+.ai-empty-state > .ai-icon {
+  margin-bottom: 8px;
+  color: var(--ai-text-muted);
+}
+.ai-empty-state h3 {
+  font-size: 16px;
+  margin: 0 0 6px;
+  font-weight: 550;
+}
+.ai-empty-state p {
+  max-width: 52ch;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.7;
+}
+#ai-butler-summary-view .initial-hint {
+  margin: 24px auto;
+  padding: 32px 24px;
+}
+#ai-butler-summary-view h2,
+#task-header-wrapper h2 {
+  font-size: 23px !important;
+  border: 0 !important;
+  font-weight: 600;
+}
+#task-header-wrapper {
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--ai-border);
+}
+#ai-butler-task-queue-view #stats-section {
+  padding-bottom: 12px;
+}
+#ai-butler-task-queue-view #stats-section .stat-card {
+  padding: 8px 12px;
+}
+#settings-content > * {
+  animation: ai-view-enter 180ms ease-out;
+}
+.ai-scanner-row:hover {
+  background: var(--ai-hover) !important;
+}
+.ai-tree-toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ai-text-muted);
+  display: flex;
+  padding: 4px;
+  cursor: pointer;
+}
+.ai-tree-toggle .ai-icon {
+  transition: transform 160ms ease-out;
+}
+.ai-tree-toggle[aria-expanded="true"] .ai-icon {
+  transform: rotate(90deg);
+}
+#ai-butler-scanner-view input[type="checkbox"] {
+  accent-color: var(--ai-accent);
+}
+
+#task-header-wrapper :is(.filter-btn, .type-filter-btn) {
+  appearance: none;
+  font-size: 13px;
+  min-height: 34px;
+  padding: 6px 10px !important;
+  border-radius: 6px;
+  color: var(--ai-text-muted) !important;
+  border: 1px solid var(--ai-border) !important;
+}
+#task-header-wrapper :is(.filter-btn, .type-filter-btn)[aria-pressed="true"] {
+  color: var(--ai-accent) !important;
+  background: var(--ai-accent-tint) !important;
+  border-color: var(--ai-accent) !important;
+}
+#task-header-wrapper :is(.filter-btn, .type-filter-btn):hover {
+  background: var(--ai-hover);
+}
+
+#activity-list .ai-empty-state {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 14px;
+  row-gap: 4px;
+  text-align: left;
+  padding: 20px;
+}
+#activity-list .ai-empty-state > .ai-icon {
+  grid-row: span 2;
+  align-self: center;
+  margin: 0;
+}
+#activity-list .ai-empty-state h3 {
+  margin: 0;
+}
+#activity-list .ai-empty-state p {
+  margin: 0;
+  max-width: none;
 }

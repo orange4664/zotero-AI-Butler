@@ -127,6 +127,7 @@ export abstract class BaseView {
   public show(): void {
     if (this.container && !this.isVisible) {
       this.container.style.display = "flex"; // 使用 flex 保持布局
+      this.container.classList.add("ai-view-active");
       this.isVisible = true;
       this.onShow();
     }
@@ -139,6 +140,7 @@ export abstract class BaseView {
    */
   public hide(): void {
     if (this.container && this.isVisible) {
+      this.container.classList.remove("ai-view-active");
       this.container.style.display = "none";
       this.isVisible = false;
       this.onHide();

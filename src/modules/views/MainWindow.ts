@@ -494,18 +494,22 @@ export class MainWindow {
         {
           id: "dashboard",
           label: getString("main-window-tab-dashboard"),
-          icon: "📊",
+          icon: "overview",
         },
         {
           id: "summary",
           label: getString("main-window-tab-summary"),
-          icon: "📝",
+          icon: "document",
         },
-        { id: "tasks", label: getString("main-window-tab-tasks"), icon: "📋" },
+        {
+          id: "tasks",
+          label: getString("main-window-tab-tasks"),
+          icon: "queue",
+        },
         {
           id: "settings",
           label: getString("main-window-tab-settings"),
-          icon: "⚙️",
+          icon: "settings",
         },
       ];
       this.scaffold = createMainWindowScaffold(host, tabs, (tabId) => {

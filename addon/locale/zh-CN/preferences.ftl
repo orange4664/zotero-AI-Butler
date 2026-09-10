@@ -475,7 +475,7 @@ settings-ui-sidebar-module-quickChat-description = 在侧边栏内对当前论�
 
 # About settings page
 settings-about-title = 关于
-settings-about-open-tutorial = 🎓 打开新手教程
+settings-about-open-tutorial = 打开新手教程
 settings-about-quote-line-1 = 文献下载一时爽，打开阅读火葬场。
 settings-about-quote-line-2 = 天书难啃骨头硬，管家嚼碎再喂粮。
 settings-about-intro-line-1 = 想着稍后阅读的论文，最后却变成了永不阅读？

@@ -16,6 +16,7 @@ These contracts apply to untrusted model output, external URLs, imported configu
 - Imported preferences: only `TRANSFER_KEYS`, correctly typed primitives, at most 1 MB input. Endpoints: at most 100 entries, bounded string fields, unique IDs, supported provider, valid URL/model. Strip keys; disable imported endpoints and auto-scan. Changing a legacy URL clears its primary and fallback key stores, including an empty/default URL.
 - Requests: HTTPS or loopback HTTP for explicitly configured local APIs. Remote resource URLs use HTTPS. Set `followRedirects: false`, `logBodyLength: 0`, `debug: false` after caller options. Keep request observers and cancellation callbacks intact.
 - Export message: `type: "export-mindmap"`, `format: "png" | "opml"`, safe basename with matching extension, bounded `dataUrl`/`content`. Verify the per-frame random token, source window (when non-null) and current frame URL before invoking the writer. Gecko intentionally returns null event sources for privileged postMessage, so source equality alone breaks normal rendering. PNG needs a valid signature; OPML disallows DTD/entities and executable elements/attributes.
+- UI icons: fixed trusted SVG paths created via `createIcon`; never parse model-provided SVG. Sanitized control/notice HTML must be parsed in an inert HTML document and imported into Zotero, whose XML parser rejects HTML void tags such as `<br>`. Keep the sanitizer before parsing.
 - UI: local system/CJK font stack, neutral surfaces, one accent, semantic colors for actual status. No automatic font shrinking. Controls have visible focus, readable wrapping and appropriate hit areas. Respect reduced motion. Settings sidebar scrolls independently and becomes horizontal below 700px.
 - Native tests require `ZOTERO_PLUGIN_ZOTERO_BIN_PATH`. `npm run test:offline` creates its own profile/data under `.scaffold/test`, ignores `.env` model credentials, excludes paid provider tests and never globally kills Zotero.
 
@@ -62,3 +63,7 @@ Object.entries(JSON.parse(text)).forEach(([key, value]) => setPref(key, value));
 // Correct: validate the full payload first and roll back failed writes.
 applySettingsImport(parseSettingsImport(text), read, write, clear);
 ```
+
+## GUI verification lessons
+
+Set HTML control height to `auto` explicitly: host styles can collapse a multi-line button even when its min-height passes. Verify text bounds against the button bounds, not only its height. Native screenshots must include populated scanner/queue fixtures, keyboard navigation, all visible settings categories, and reduced-motion behavior. Expand/collapse updates attributes and preserves SVG children, including after recursive selection. CSS colors returned as variables cannot use hexadecimal alpha suffix concatenation; use theme surface/border tokens.

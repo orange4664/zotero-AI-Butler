@@ -115,10 +115,10 @@ export class PromptsSettingsPage {
     const title = Zotero.getMainWindow().document.createElement("h2");
     title.textContent = this.getPageTitle();
     Object.assign(title.style, {
-      color: "#59c0bc",
+      color: "var(--ai-accent)",
       marginBottom: "20px",
       fontSize: "20px",
-      borderBottom: "2px solid #59c0bc",
+      borderBottom: "2px solid var(--ai-accent)",
       paddingBottom: "10px",
     });
     contentWrapper.appendChild(title);
@@ -162,7 +162,7 @@ export class PromptsSettingsPage {
       "settings-prompts-multi-round-title",
     );
     Object.assign(multiRoundTitle.style, {
-      color: "#59c0bc",
+      color: "var(--ai-accent)",
       margin: "0",
       fontSize: "14px",
       whiteSpace: "nowrap",
@@ -461,8 +461,7 @@ export class PromptsSettingsPage {
       padding: "16px",
       borderRadius: "16px",
       border: "1px solid var(--ai-border, rgba(89, 192, 188, 0.22))",
-      background:
-        "linear-gradient(180deg, var(--ai-surface, #ffffff), var(--ai-bg, #f7f9fb))",
+      background: "var(--ai-surface-2)",
       boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
       boxSizing: "border-box",
     };
@@ -951,11 +950,11 @@ export class PromptsSettingsPage {
       independent.prompts.forEach((prompt, index) => {
         const promptCard = doc.createElement("div");
         Object.assign(promptCard.style, {
-          border: "1px solid rgba(89, 192, 188, 0.28)",
+          border: "1px solid var(--ai-border)",
           borderRadius: "10px",
           padding: "12px",
           marginTop: index === 0 ? "0" : "12px",
-          background: "rgba(89, 192, 188, 0.035)",
+          background: "var(--ai-surface-2)",
         });
 
         const cardHeader = doc.createElement("div");
@@ -1233,7 +1232,7 @@ export class PromptsSettingsPage {
     const doc = Zotero.getMainWindow().document;
     const card = doc.createElement("div");
     Object.assign(card.style, {
-      border: "1px solid rgba(89, 192, 188, 0.35)",
+      border: "1px solid var(--ai-border)",
       borderRadius: "10px",
       padding: "14px",
       background: "var(--ai-surface, #fff)",
@@ -1243,7 +1242,7 @@ export class PromptsSettingsPage {
     heading.textContent = title;
     Object.assign(heading.style, {
       margin: "0 0 8px 0",
-      color: "#59c0bc",
+      color: "var(--ai-accent)",
       fontSize: "15px",
     });
     card.appendChild(heading);
@@ -1282,14 +1281,8 @@ export class PromptsSettingsPage {
       Object.assign(badge.style, {
         padding: variant === "template" ? "5px 10px" : "6px 11px",
         borderRadius: variant === "template" ? "999px" : "8px",
-        background:
-          variant === "template"
-            ? "linear-gradient(135deg, rgba(89, 192, 188, 0.14), rgba(76, 175, 80, 0.12))"
-            : "rgba(33, 150, 243, 0.1)",
-        border:
-          variant === "template"
-            ? "1px solid rgba(89, 192, 188, 0.3)"
-            : "1px solid rgba(33, 150, 243, 0.22)",
+        background: "var(--ai-surface-2)",
+        border: "1px solid var(--ai-border)",
         color: "var(--ai-text, #333)",
         fontSize: variant === "template" ? "12px" : "12.5px",
         fontWeight: variant === "template" ? "600" : "500",
@@ -1300,7 +1293,7 @@ export class PromptsSettingsPage {
         const arrow = doc.createElement("span");
         arrow.textContent = "→";
         Object.assign(arrow.style, {
-          color: variant === "template" ? "#59c0bc" : "#2196f3",
+          color: "var(--ai-text-muted)",
           fontWeight: "700",
           fontSize: variant === "template" ? "15px" : "16px",
           opacity: "0.85",

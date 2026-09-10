@@ -475,7 +475,7 @@ settings-ui-sidebar-module-quickChat-description = Ask temporary follow-up quest
 
 # About settings page
 settings-about-title = About
-settings-about-open-tutorial = 🎓 Open Onboarding Tutorial
+settings-about-open-tutorial = Open Onboarding Tutorial
 settings-about-quote-line-1 = Papers are easy to collect; reading them is the real challenge.
 settings-about-quote-line-2 = When academic prose gets dense, AI Butler digests it into something usable.
 settings-about-intro-line-1 = Do papers saved for “later reading” keep turning into “never reading”?

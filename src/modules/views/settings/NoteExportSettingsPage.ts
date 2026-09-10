@@ -39,29 +39,12 @@ export class NoteExportSettingsPage {
       color: "var(--ai-text)",
     });
 
-    const hero = createPanel(
-      doc,
-      "linear-gradient(135deg, rgba(89, 192, 188, 0.16), rgba(255, 255, 255, 0.02))",
-    );
+    const hero = createPanel(doc, "var(--ai-surface-2)");
     Object.assign(hero.style, {
       padding: "22px 24px",
       overflow: "hidden",
       position: "relative",
     });
-
-    const heroGlow = doc.createElement("div");
-    Object.assign(heroGlow.style, {
-      position: "absolute",
-      right: "-56px",
-      top: "-70px",
-      width: "190px",
-      height: "190px",
-      borderRadius: "999px",
-      background:
-        "radial-gradient(circle, rgba(89, 192, 188, 0.28), rgba(89, 192, 188, 0))",
-      pointerEvents: "none",
-    });
-    hero.appendChild(heroGlow);
 
     const heroContent = doc.createElement("div");
     Object.assign(heroContent.style, {
@@ -194,7 +177,7 @@ export class NoteExportSettingsPage {
     });
     const browseButton = createStyledButton(
       getString("settings-note-export-choose-directory"),
-      "#59c0bc",
+      "var(--ai-accent)",
       "medium",
     );
     Object.assign(browseButton.style, {

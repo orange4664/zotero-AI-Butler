@@ -1,10 +1,10 @@
 # Zotero AI Butler · 简洁界面与安全加固版
 
-这是 [Steven Jianhao Li 原项目](https://github.com/steven-jianhao-li/zotero-AI-Butler) 的维护 fork，保留原作者和 AGPL 授权。基于上游 `5df5c62`，当前版本为 **4.1.0-fork.1**。
+这是 [Steven Jianhao Li 原项目](https://github.com/steven-jianhao-li/zotero-AI-Butler) 的维护 fork，保留原作者和 AGPL 授权。基于上游 `5df5c62`，当前版本为 **4.1.0-fork.2**。
 
-[下载本 fork 的 XPI](https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.1) · [安全修复与已知限制](SECURITY.md) · [开发与验证约定](docs/development-contracts.md)
+[下载本 fork 的 XPI](https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.2) · [安全修复与已知限制](SECURITY.md) · [开发与验证约定](docs/development-contracts.md)
 
-- **界面**：灰白/中性暗色、统一中文字体栈、可读的按钮字号和间距。移除仪表盘渐变与装饰性图标，加入轻量状态动画、键盘焦点及窄窗口布局。
+- **界面**：本地 SVG 线性图标、统一中文字体、紧凑统计栏与三个阅读入口；导航、按钮和工作状态有轻量动效，并尊重减少动态效果设置。扫描树、任务队列和主要设置页使用统一的中性色与暗色主题。
 - **安全**：过滤不可信 HTML 和危险链接，关闭 KaTeX 可信命令；配置导出不带密钥，导入先校验；限制请求重定向和不安全地址；验证思维导图通信与导出文件。
 - **可靠性**：等待异步清理完成后再报告成功，隐藏仪表盘时暂停轮询；修复依赖、构建和离线测试流程。
 
@@ -15,6 +15,8 @@
 ![暗色工作概览](docs/screenshots/dashboard-dark.png)
 ![模型设置](docs/screenshots/settings-light.png)
 ![窄窗口设置](docs/screenshots/settings-narrow.png)
+![任务队列（测试数据）](docs/screenshots/tasks-dark.png)
+![文献扫描（测试数据）](docs/screenshots/scanner-light.png)
 
 </details>
 
@@ -30,8 +32,8 @@
 
 <!-- Badges -->
 <p>
-    <a href="https://github.com/orange4664/zotero-AI-Butler/releases/latest"><img src="https://img.shields.io/github/v/release/steven-jianhao-li/zotero-AI-Butler" alt="Latest Release"></a>
-    <a href="https://github.com/orange4664/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/steven-jianhao-li/zotero-AI-Butler/total.svg" alt="Downloads"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.2"><img src="https://img.shields.io/github/v/release/orange4664/zotero-AI-Butler?include_prereleases" alt="Latest Release"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/orange4664/zotero-AI-Butler/total.svg" alt="Downloads"></a>
     <a href="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github"><img src="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github" alt="Using Zotero Plugin Template"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/stargazers"><img src="https://img.shields.io/github/stars/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Stars"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/network/members"><img src="https://img.shields.io/github/forks/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Forks"></a>
