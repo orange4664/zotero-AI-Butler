@@ -1,3 +1,7 @@
+import {
+  secureRequest,
+  validateRemoteResourceUrl,
+} from "../utils/secureRequest";
 /**
  * ================================================================
  * 一图总结图片生成客户端
@@ -603,7 +607,7 @@ export class ImageClient {
 
     let res: any;
     try {
-      res = await Zotero.HTTP.request("GET", endpoint, {
+      res = await secureRequest("GET", validateRemoteResourceUrl(endpoint), {
         headers: {
           Accept: "image/*,*/*;q=0.8",
         },
@@ -1461,7 +1465,7 @@ export class ImageClient {
       isImagesEndpoint ? "images" : isResponsesEndpoint ? "responses" : "chat",
     );
 
-    ztoolkit.log(`[AI-Butler] 调用 OpenAI 兼容生图 API: ${endpoint}`);
+    ztoolkit.log("[AI-Butler] 调用 OpenAI 兼容生图 API");
     ztoolkit.log(`[AI-Butler] 生图提示词长度: ${prompt.length} 字符`);
 
     throwIfAborted(config.abortSignal);
@@ -1470,7 +1474,7 @@ export class ImageClient {
     let abortError: Error | null = null;
     let cleanupAbortSignal: (() => void) | undefined;
     try {
-      response = await Zotero.HTTP.request("POST", endpoint, {
+      response = await secureRequest("POST", endpoint, {
         headers,
         body: JSON.stringify(payload),
         responseType: "text",
@@ -1767,7 +1771,7 @@ export class ImageClient {
     let abortError: Error | null = null;
     let cleanupAbortSignal: (() => void) | undefined;
     try {
-      response = await Zotero.HTTP.request("POST", endpoint, {
+      response = await secureRequest("POST", endpoint, {
         headers,
         body: JSON.stringify(payload),
         responseType: "text",

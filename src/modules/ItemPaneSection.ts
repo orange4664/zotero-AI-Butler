@@ -1,3 +1,5 @@
+import { sanitizeUntrustedHtml } from "../utils/safeHtml";
+import { saveMindmapExport } from "./mindmapExport";
 /**
  * ================================================================
  * 条目面板侧边栏区块模块
@@ -2668,7 +2670,7 @@ async function loadTableContent(
       // 将 Markdown 表格简单渲染为 HTML
       const { marked } = await import("marked");
       marked.setOptions({ gfm: true, breaks: true });
-      const html = marked.parse(tableContent) as string;
+      const html = sanitizeUntrustedHtml(marked.parse(tableContent) as string);
       container.innerHTML = html;
       // 适配表格样式
       const tables = container.querySelectorAll("table");
@@ -3419,13 +3421,25 @@ async function loadMindmapContent(
       // 获取插件路径并构建 mindmap.html 的 URL
       // Zotero 7 使用 chrome:// 协议访问插件资源
       const rootURI = `chrome://${config.addonRef}/content/`;
-      iframe.src = rootURI + "mindmap.html";
+      const channelToken = Services.uuid.generateUUID().toString();
+      iframe.src =
+        rootURI + "mindmap.html#channel=" + encodeURIComponent(channelToken);
 
       // 保存 markdown 内容用于后续发送
       const mdContent = markdownContent;
 
       // 监听 iframe 的消息（ready 和 export）
       const messageHandler = async (event: MessageEvent) => {
+        // Gecko suppresses event.source for privileged postMessage calls.
+        // Authenticate null-source messages with a per-frame random capability.
+        if (event.source !== null && event.source !== iframe.contentWindow)
+          return;
+        if (event.data?.channelToken !== channelToken) return;
+        try {
+          if (iframe.contentWindow?.location.href !== iframe.src) return;
+        } catch {
+          return;
+        }
         if (event.data && event.data.type === "mindmap-ready") {
           ztoolkit.log(
             "[AI-Butler] 收到 iframe ready 消息，发送 markdown 数据",
@@ -3434,6 +3448,7 @@ async function loadMindmapContent(
             iframe.contentWindow?.postMessage(
               {
                 type: "render-mindmap",
+                channelToken,
                 markdown: mdContent,
               },
               "*",
@@ -3466,94 +3481,17 @@ async function loadMindmapContent(
         if (event.data && event.data.type === "export-mindmap") {
           ztoolkit.log("[AI-Butler] 收到导出请求, 格式:", event.data.format);
           try {
-            const format = event.data.format || "png";
-            const filename = event.data.filename || `mindmap.${format}`;
-
-            // 获取导出目录（优先使用用户配置，否则使用桌面）
-            let downloadDir: string = "";
-            const customPath =
-              (getPref("mindmapExportPath" as any) as string) || "";
-
-            if (customPath && customPath.trim()) {
-              // 使用用户自定义路径
-              downloadDir = customPath.trim();
-              // 确保目录存在
-              try {
-                await IOUtils.makeDirectory(downloadDir, {
-                  ignoreExisting: true,
-                });
-              } catch (e) {
-                ztoolkit.log("[AI-Butler] 自定义目录创建失败，回退到桌面:", e);
-                downloadDir = "";
-              }
-            }
-
-            if (!downloadDir) {
-              try {
-                // 使用 Services.dirsvc 获取桌面目录
-                const desktopDir = Services.dirsvc.get("Desk", Ci.nsIFile);
-                downloadDir = desktopDir.path;
-              } catch (e) {
-                ztoolkit.log(
-                  "[AI-Butler] 无法获取桌面目录，使用 Zotero 数据目录:",
-                  e,
-                );
-                // 回退到 Zotero 数据目录
-                const dataDir = Zotero.DataDirectory.dir;
-                downloadDir = PathUtils.join(dataDir, "mindmaps");
-                try {
-                  await IOUtils.makeDirectory(downloadDir, {
-                    ignoreExisting: true,
-                  });
-                } catch (e2) {
-                  downloadDir = dataDir;
-                }
-              }
-            }
-
-            const filePath = PathUtils.join(downloadDir, filename);
-
-            if (format === "png") {
-              // PNG 导出
-              const dataUrl = event.data.dataUrl;
-              const base64Data = dataUrl.replace(
-                /^data:image\/png;base64,/,
-                "",
-              );
-              const binaryString = atob(base64Data);
-              const bytes = new Uint8Array(binaryString.length);
-              for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-              }
-              await IOUtils.write(filePath, bytes);
-            } else if (format === "opml") {
-              // OPML 导出
-              const content = event.data.content;
-              const encoder = new TextEncoder();
-              const bytes = encoder.encode(content);
-              await IOUtils.write(filePath, bytes);
-            }
-
-            ztoolkit.log("[AI-Butler] 思维导图已保存到:", filePath);
-
-            // 显示通知
+            const filePath = await saveMindmapExport(event.data);
             new ztoolkit.ProgressWindow(
               getString("itempane-mindmap-exported-title"),
             )
               .createLine({
                 text: getString("itempane-mindmap-exported-to-desktop", {
-                  args: { filename },
+                  args: { filename: filePath },
                 }),
                 type: "success",
               })
               .show();
-
-            // 打开文件
-            try {
-              Zotero.launchFile(filePath);
-            } catch (e) {
-              // 忽略打开文件失败
-            }
           } catch (e) {
             ztoolkit.log("[AI-Butler] 保存思维导图失败:", e);
             new ztoolkit.ProgressWindow(
@@ -3586,6 +3524,7 @@ async function loadMindmapContent(
             iframe.contentWindow?.postMessage(
               {
                 type: "render-mindmap",
+                channelToken,
                 markdown: mdContent,
               },
               "*",
@@ -4928,7 +4867,7 @@ function renderChatArea(
         return;
       }
       ztoolkit.log("[AI-Butler] 快速追问发送失败:", err);
-      aiMsgDiv.innerHTML = `<strong>${getString("itempane-assistant-label")}</strong> <span style="color: #f44336;">${getString("itempane-error", { args: { error: err?.message || getString("itempane-send-failed") } })}</span>`;
+      aiMsgDiv.innerHTML = `<strong>${getString("itempane-assistant-label")}</strong> <span style="color: #f44336;">${getString("itempane-error", { args: { error: escapeHtmlForChat(err?.message || getString("itempane-send-failed")) } })}</span>`;
     } finally {
       // 恢复状态
       currentChatState.isChatting = false;
@@ -5757,7 +5696,10 @@ async function startSidebarNoteEdit(
     const editableHtml = LLMNoteMetadataService.stripSidebarMetadata(
       selectedBlock ? selectedBlock.content : rawNoteHtml,
     );
-    const safeEditableHtml = normalizeHtmlFragmentForXhtml(doc, editableHtml);
+    const safeEditableHtml = normalizeHtmlFragmentForXhtml(
+      doc,
+      sanitizeUntrustedHtml(editableHtml),
+    );
 
     sidebarNoteEditState = {
       itemId: item.id,
@@ -6269,7 +6211,9 @@ async function loadNoteContent(
       summaryBlocks.length > 0
         ? summaryBlocks[selectedBlockIndex].content
         : rawNoteHtml;
-    aiNoteContent = LLMNoteMetadataService.stripSidebarMetadata(aiNoteContent);
+    aiNoteContent = sanitizeUntrustedHtml(
+      LLMNoteMetadataService.stripSidebarMetadata(aiNoteContent),
+    );
 
     // 加载主题 CSS
     const { themeManager } = await import("./themeManager");
@@ -6339,7 +6283,7 @@ async function loadNoteContent(
               throwOnError: false,
               displayMode: true,
               output: "html",
-              trust: true,
+              trust: false,
               strict: false,
             });
             return `<div class="katex-scroll-container" style="display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;contain:inline-size;"><div class="katex-display">${rendered}</div></div>`;
@@ -6393,7 +6337,7 @@ async function loadNoteContent(
                 throwOnError: false,
                 displayMode: true,
                 output: "html",
-                trust: true,
+                trust: false,
                 strict: false,
               });
               return `<div class="katex-scroll-container" style="display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;contain:inline-size;"><div class="katex-display">${rendered}</div></div>`;
@@ -6408,7 +6352,7 @@ async function loadNoteContent(
                 throwOnError: false,
                 displayMode: isTaggedDisplay ? true : false, // inline
                 output: "html",
-                trust: true,
+                trust: false,
                 strict: false,
               });
               if (isTaggedDisplay) {
@@ -6436,7 +6380,7 @@ async function loadNoteContent(
                 throwOnError: false,
                 displayMode: true,
                 output: "html",
-                trust: true,
+                trust: false,
                 strict: false,
               },
             );
@@ -6469,7 +6413,7 @@ async function loadNoteContent(
               throwOnError: false,
               displayMode: isTaggedDisplay ? true : false,
               output: "html",
-              trust: true,
+              trust: false,
               strict: false,
             });
             if (isTaggedDisplay) {
@@ -6969,7 +6913,7 @@ async function loadImageSummary(
     imageContainer.appendChild(imgElement);
   } catch (err: any) {
     ztoolkit.log("[AI-Butler] 加载一图总结失败:", err);
-    imageContainer.innerHTML = `<div style="color: #d32f2f; font-size: 12px;">${getString("itempane-load-failed", { args: { error: err.message } })}</div>`;
+    imageContainer.innerHTML = `<div style="color: #d32f2f; font-size: 12px;">${getString("itempane-load-failed", { args: { error: escapeHtmlForChat(err.message) } })}</div>`;
   }
 }
 
@@ -7079,7 +7023,7 @@ async function openMindmapViewerWindow(
     {
       markdown,
       title,
-      prefsPrefix: config.prefsPrefix,
+      onExport: saveMindmapExport,
     },
   );
 
@@ -7091,7 +7035,7 @@ async function openMindmapViewerWindow(
   try {
     (dialogWin as any).__aiButlerMindmapMarkdown = markdown;
     (dialogWin as any).__aiButlerTitle = title;
-    (dialogWin as any).__aiButlerPrefsPrefix = config.prefsPrefix;
+    (dialogWin as any).__aiButlerOnExport = saveMindmapExport;
   } catch {
     // ignore
   }

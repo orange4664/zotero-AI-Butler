@@ -1,9 +1,25 @@
+# AI Butler: clear UI and security fork
+
+Maintained fork of [Steven Jianhao Li's Zotero AI Butler](https://github.com/steven-jianhao-li/zotero-AI-Butler), preserving upstream authorship and AGPL licensing. Based on upstream `5df5c62`.
+
+[Download 4.1.0-fork.1](https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.1) · [Security changes and limitations](SECURITY.md) · [Development contracts](docs/development-contracts.md)
+
+This edition improves Markdown/HTML safety, configuration sharing, transport and mindmap export boundaries, and introduces neutral themes, readable local fonts, keyboard focus and restrained motion. Install the XPI through Zotero's add-on manager. It uses the upstream add-on ID and preference namespace, replacing the original extension while retaining existing notes/settings; updates point to this fork.
+
+![Native Zotero overview](docs/screenshots/dashboard-light.png)
+
+Native regressions, production build, TypeScript, i18n and lint are checked. Production dependencies have no reported advisories; two moderate development-only ZIP-tool findings remain. Keys still use local Zotero preferences, not an encrypted OS vault. No paid model requests or personal library data were used in validation.
+
+---
+
+Upstream feature documentation follows; older screenshots may show the original UI.
+
 # Zotero Plugin: **zotero-AI-Butler [AI Butler]**
 
 <!-- Badges -->
 <p>
-    <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/releases/latest"><img src="https://img.shields.io/github/v/release/steven-jianhao-li/zotero-AI-Butler" alt="Latest Release"></a>
-    <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/steven-jianhao-li/zotero-AI-Butler/total.svg" alt="Downloads"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases/latest"><img src="https://img.shields.io/github/v/release/steven-jianhao-li/zotero-AI-Butler" alt="Latest Release"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/steven-jianhao-li/zotero-AI-Butler/total.svg" alt="Downloads"></a>
     <a href="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github"><img src="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github" alt="Using Zotero Plugin Template"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/stargazers"><img src="https://img.shields.io/github/stars/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Stars"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/network/members"><img src="https://img.shields.io/github/forks/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Forks"></a>
@@ -13,7 +29,7 @@
 
 **Language / 语言**: [简体中文](./README.md) | English
 
-> Privacy statement: This project is a third-party open-source Zotero plugin. It does not provide any LLM proxy service. Users need to apply for and configure their own LLM API keys before using it. This plugin never collects, stores, or uploads any personal data, literature, or API keys. All interaction requests are sent directly from your local device to the LLM provider you configure.
+> Privacy: API keys are saved in local Zotero preferences. Selected papers/PDFs, prompts and chat context are sent to your configured model providers; PDFs are sent to MinerU when that extraction mode is selected. This fork adds no telemetry or relay. See [SECURITY.md](SECURITY.md) for protections and remaining limitations.
 
 > If this plugin helps your research, you are welcome to [cite it](https://github.com/steven-jianhao-li/zotero-AI-Butler#%E5%A6%82%E4%BD%95%E5%BC%95%E7%94%A8) or acknowledge it in your paper.
 

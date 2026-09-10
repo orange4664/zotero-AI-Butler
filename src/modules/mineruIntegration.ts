@@ -1,3 +1,4 @@
+import { secureFetch } from "../utils/secureRequest";
 /**
  * ================================================================
  * MinerU OCR 交互模块
@@ -129,17 +130,20 @@ export class MineruClient {
         args: { model: modelVersion },
       }),
     });
-    const batchRes = await fetch("https://mineru.net/api/v4/file-urls/batch", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
+    const batchRes = await secureFetch(
+      "https://mineru.net/api/v4/file-urls/batch",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          files: [{ name: fileName }],
+          model_version: modelVersion,
+        }),
       },
-      body: JSON.stringify({
-        files: [{ name: fileName }],
-        model_version: modelVersion,
-      }),
-    });
+    );
 
     if (!batchRes.ok) {
       const err = await batchRes.text();
@@ -162,9 +166,7 @@ export class MineruClient {
     else if (batchData?.data?.upload_url) putUrl = batchData.data.upload_url;
 
     if (!putUrl || !batchId) {
-      throw new Error(
-        `MinerU API returned unexpected batch response: ${JSON.stringify(batchData)}`,
-      );
+      throw new Error(getString("security-request-failed"));
     }
 
     // Upload file content to the presigned URL
@@ -176,7 +178,7 @@ export class MineruClient {
         args: { size: (fileData.byteLength / 1024 / 1024).toFixed(2) },
       }),
     });
-    const putRes = await fetch(putUrl, {
+    const putRes = await secureFetch(putUrl, {
       method: "PUT",
       body: fileData,
     });
@@ -233,7 +235,7 @@ export class MineruClient {
       }
       attempt += 1;
 
-      const res = await fetch(url, {
+      const res = await secureFetch(url, {
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },
@@ -305,12 +307,12 @@ export class MineruClient {
     zipUrl: string,
     progressCallback?: PdfExtractionProgressCallback,
   ): Promise<MineruExtractedResult> {
-    ztoolkit.log(`[MineruIntegration] Downloading zip result from ${zipUrl}`);
-    const res = await fetch(zipUrl);
+    ztoolkit.log("[MineruIntegration] Downloading zip result");
+    const res = await secureFetch(zipUrl);
     if (!res.ok) {
       throw new Error(
         getString("mineru-error-download-zip-failed", {
-          args: { url: zipUrl },
+          args: { url: "[remote download]" },
         }),
       );
     }

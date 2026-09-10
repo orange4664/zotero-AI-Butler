@@ -1,9 +1,37 @@
+# Zotero AI Butler · 简洁界面与安全加固版
+
+这是 [Steven Jianhao Li 原项目](https://github.com/steven-jianhao-li/zotero-AI-Butler) 的维护 fork，保留原作者和 AGPL 授权。基于上游 `5df5c62`，当前版本为 **4.1.0-fork.1**。
+
+[下载本 fork 的 XPI](https://github.com/orange4664/zotero-AI-Butler/releases/tag/v4.1.0-fork.1) · [安全修复与已知限制](SECURITY.md) · [开发与验证约定](docs/development-contracts.md)
+
+- **界面**：灰白/中性暗色、统一中文字体栈、可读的按钮字号和间距。移除仪表盘渐变与装饰性图标，加入轻量状态动画、键盘焦点及窄窗口布局。
+- **安全**：过滤不可信 HTML 和危险链接，关闭 KaTeX 可信命令；配置导出不带密钥，导入先校验；限制请求重定向和不安全地址；验证思维导图通信与导出文件。
+- **可靠性**：等待异步清理完成后再报告成功，隐藏仪表盘时暂停轮询；修复依赖、构建和离线测试流程。
+
+![新版工作概览：原生 Zotero 窗口](docs/screenshots/dashboard-light.png)
+
+<details><summary>查看暗色界面与模型设置</summary>
+
+![暗色工作概览](docs/screenshots/dashboard-dark.png)
+![模型设置](docs/screenshots/settings-light.png)
+![窄窗口设置](docs/screenshots/settings-narrow.png)
+
+</details>
+
+**安装**：在 Zotero 的「工具 → 插件」中选择「从文件安装插件」，打开本 fork 的 `.xpi` 文件。使用与上游相同的插件 ID，安装会替换原版；笔记和配置沿用原命名空间。建议先备份 Zotero 配置。此 fork 的自动更新地址指向 `orange4664`，不会被原版自动更新覆盖。
+
+**验证**：在 macOS 的独立 Zotero 配置中运行原生回归测试并截图；构建、类型检查、i18n 和 lint 均通过。生产依赖审计为 0 项；开发打包工具仍有 2 项中危告警，详见 [SECURITY.md](SECURITY.md)。API 密钥仍保存在 Zotero 本地偏好中，未实现系统密钥库加密。未使用个人文献或付费模型 API 进行测试。
+
+---
+
+以下为上游功能与使用文档，截图和部分版本说明可能对应原版。
+
 # Zotero插件：**zotero-AI-Butler【AI 管家】**
 
 <!-- Badges -->
 <p>
-    <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/releases/latest"><img src="https://img.shields.io/github/v/release/steven-jianhao-li/zotero-AI-Butler" alt="Latest Release"></a>
-    <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/steven-jianhao-li/zotero-AI-Butler/total.svg" alt="Downloads"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases/latest"><img src="https://img.shields.io/github/v/release/steven-jianhao-li/zotero-AI-Butler" alt="Latest Release"></a>
+    <a href="https://github.com/orange4664/zotero-AI-Butler/releases"><img src="https://img.shields.io/github/downloads/steven-jianhao-li/zotero-AI-Butler/total.svg" alt="Downloads"></a>
     <a href="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github"><img src="https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github" alt="Using Zotero Plugin Template"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/stargazers"><img src="https://img.shields.io/github/stars/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Stars"></a>
     <a href="https://github.com/steven-jianhao-li/zotero-AI-Butler/network/members"><img src="https://img.shields.io/github/forks/steven-jianhao-li/zotero-AI-Butler?style=social" alt="Forks"></a>
@@ -13,7 +41,7 @@
 
 **语言 / Language**：简体中文 | [English](./README-EN.md)
 
-> 隐私声明：本项目为第三方开源Zotero插件，不提供任何的大模型代理服务。用户需自行申请并配置大模型API Key方可使用。本插件绝不收集、存储或上传您的任何个人数据、文献或API Key，所有的交互请求均直接从您的本地设备发送至您配置的大模型服务商处。
+> 隐私说明：插件会在 Zotero 本地配置中保存 API 密钥，并将所选文献或 PDF、提示词和对话发送到您配置的模型服务商。选择 MinerU 时，PDF 会发送至 MinerU。此 fork 不添加遥测或代理服务，详见 [SECURITY.md](SECURITY.md)。
 
 > 如果本插件对您的研究有帮助，欢迎在论文中[引用](https://github.com/steven-jianhao-li/zotero-AI-Butler#%E5%A6%82%E4%BD%95%E5%BC%95%E7%94%A8)或致谢！
 

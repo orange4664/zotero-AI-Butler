@@ -1,3 +1,4 @@
+import { secureRequest } from "../../utils/secureRequest";
 import { ILlmProvider } from "./ILlmProvider";
 import {
   ConversationMessage,
@@ -174,7 +175,7 @@ export class OpenAICompatProvider implements ILlmProvider {
       let cleanupAbortSignal: (() => void) | undefined;
 
       try {
-        await Zotero.HTTP.request("POST", apiUrl, {
+        await secureRequest("POST", apiUrl, {
           headers: this.buildHeaders(apiKey),
           body: JSON.stringify(payload),
           responseType: "text",
@@ -330,7 +331,7 @@ export class OpenAICompatProvider implements ILlmProvider {
     let abortError: Error | null = null;
     let cleanupAbortSignal: (() => void) | undefined;
     try {
-      const res = await Zotero.HTTP.request("POST", apiUrl, {
+      const res = await secureRequest("POST", apiUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(basePayload),
         responseType: "json",
@@ -448,7 +449,7 @@ export class OpenAICompatProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", apiUrl, {
+      await secureRequest("POST", apiUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(payload),
         responseType: "text",
@@ -670,7 +671,7 @@ export class OpenAICompatProvider implements ILlmProvider {
     let response: any;
     const responseHeaders: Record<string, string> = {};
     try {
-      response = await Zotero.HTTP.request("POST", apiUrl, {
+      response = await secureRequest("POST", apiUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(payload),
         errorDelayMax: 0,
@@ -843,7 +844,7 @@ export class OpenAICompatProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", apiUrl, {
+      await secureRequest("POST", apiUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(payload),
         responseType: "text",

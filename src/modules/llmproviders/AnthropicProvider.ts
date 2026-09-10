@@ -1,3 +1,4 @@
+import { secureRequest } from "../../utils/secureRequest";
 import { ILlmProvider } from "./ILlmProvider";
 import {
   ConversationMessage,
@@ -144,7 +145,7 @@ export class AnthropicProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           "x-api-key": apiKey,
@@ -356,7 +357,7 @@ export class AnthropicProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           "x-api-key": apiKey,
@@ -578,7 +579,7 @@ export class AnthropicProvider implements ILlmProvider {
     let response: any;
     const responseHeaders: Record<string, string> = {};
     try {
-      response = await Zotero.HTTP.request("POST", url, {
+      response = await secureRequest("POST", url, {
         headers: {
           "Content-Type": "application/json",
           "x-api-key": apiKey,
@@ -762,7 +763,7 @@ export class AnthropicProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           "x-api-key": apiKey,

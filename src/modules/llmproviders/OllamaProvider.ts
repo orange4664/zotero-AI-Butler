@@ -1,3 +1,4 @@
+import { secureRequest } from "../../utils/secureRequest";
 import { ILlmProvider } from "./ILlmProvider";
 import {
   APITestError,
@@ -261,7 +262,7 @@ export class OllamaProvider implements ILlmProvider {
     let response: any;
 
     try {
-      response = await Zotero.HTTP.request("POST", chatUrl, {
+      response = await secureRequest("POST", chatUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(payload),
         responseType: "text",
@@ -327,7 +328,7 @@ export class OllamaProvider implements ILlmProvider {
     let abortError: Error | null = null;
     let cleanupAbortSignal: (() => void) | undefined;
     try {
-      const response = await Zotero.HTTP.request("POST", chatUrl, {
+      const response = await secureRequest("POST", chatUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify({ ...payload, stream: false }),
         responseType: "text",
@@ -404,7 +405,7 @@ export class OllamaProvider implements ILlmProvider {
 
     let response: any;
     try {
-      response = await Zotero.HTTP.request("POST", chatUrl, {
+      response = await secureRequest("POST", chatUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify({ ...payload, stream: true }),
         responseType: "text",

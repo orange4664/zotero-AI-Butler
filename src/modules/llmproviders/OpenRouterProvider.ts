@@ -1,3 +1,4 @@
+import { secureRequest } from "../../utils/secureRequest";
 import { ILlmProvider } from "./ILlmProvider";
 import {
   ConversationMessage,
@@ -265,7 +266,7 @@ export class OpenRouterProvider implements ILlmProvider {
     let response: any;
 
     try {
-      response = await Zotero.HTTP.request("POST", apiUrl, {
+      response = await secureRequest("POST", apiUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(payload),
         responseType: "text",
@@ -401,7 +402,7 @@ export class OpenRouterProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", apiUrl, {
+      await secureRequest("POST", apiUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(payloadWithStream),
         responseType: "text",
@@ -532,7 +533,7 @@ export class OpenRouterProvider implements ILlmProvider {
     let abortError: Error | null = null;
     let cleanupAbortSignal: (() => void) | undefined;
     try {
-      const res = await Zotero.HTTP.request("POST", apiUrl, {
+      const res = await secureRequest("POST", apiUrl, {
         headers: this.buildHeaders(apiKey),
         body: JSON.stringify(payload),
         responseType: "json",

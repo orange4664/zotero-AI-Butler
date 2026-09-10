@@ -14,6 +14,11 @@ import type { AiNoteKind } from "../../aiNoteService";
 import { TaskQueueManager } from "../../taskQueue";
 import { getDefaultSummaryPrompt } from "../../../utils/prompts";
 import { getString } from "../../../utils/locale";
+import {
+  exportSettings,
+  parseSettingsImport,
+  applySettingsImport,
+} from "../../settingsTransfer";
 
 export class DataSettingsPage {
   private container: HTMLElement;
@@ -86,6 +91,7 @@ export class DataSettingsPage {
     const row1 = Zotero.getMainWindow().document.createElement("div");
     Object.assign(row1.style, {
       display: "flex",
+      flexWrap: "wrap",
       gap: "12px",
       marginBottom: "12px",
     });
@@ -147,6 +153,7 @@ export class DataSettingsPage {
     const row2 = Zotero.getMainWindow().document.createElement("div");
     Object.assign(row2.style, {
       display: "flex",
+      flexWrap: "wrap",
       gap: "12px",
       marginBottom: "12px",
     });
@@ -168,6 +175,7 @@ export class DataSettingsPage {
     const row3 = Zotero.getMainWindow().document.createElement("div");
     Object.assign(row3.style, {
       display: "flex",
+      flexWrap: "wrap",
       gap: "12px",
       marginBottom: "12px",
     });
@@ -194,59 +202,21 @@ export class DataSettingsPage {
   }
 
   private exportSettings(): void {
-    // 采集 prefs.d.ts 中声明的键
-    const keys = [
-      "provider",
-      "llmEndpoints",
-      "llmRoutingStrategy",
-      "multiModelSummaryEnabled",
-      "multiModelSummaryEndpointIds",
-      "openaiApiKey",
-      "openaiApiUrl",
-      "openaiApiModel",
-      "geminiApiUrl",
-      "geminiApiKey",
-      "geminiModel",
-      "temperature",
-      "enableTemperature",
-      "maxTokens",
-      "enableMaxTokens",
-      "topP",
-      "enableTopP",
-      "reasoningEffort",
-      "stream",
-      "requestTimeout",
-      "autoContinuationRounds",
-      "summaryPrompt",
-      "customPrompts",
-      "multiRoundPromptTemplates",
-      "multiRoundPromptTemplateId",
-      "maxRetries",
-      "batchSize",
-      "batchInterval",
-      "autoScan",
-      "scanInterval",
-      "pdfProcessMode",
-      "pdfAttachmentMode",
-      "theme",
-      "fontSize",
-      "autoScroll",
-      "windowWidth",
-      "windowHeight",
-      "openTaskPanelOnSummon",
-      "notePrefix",
-      "noteStrategy",
-    ];
-    const data: any = {};
-    keys.forEach((k) => {
-      try {
-        data[k] = getPref(k as any);
-      } catch (e) {
-        // 忽略单个首选项读取失败
-        return;
-      }
-    });
-    const json = JSON.stringify(data, null, 2);
+    let json: string;
+    try {
+      json = JSON.stringify(
+        exportSettings((key) => getPref(key as any)),
+        null,
+        2,
+      );
+    } catch {
+      Services.prompt.alert(
+        Zotero.getMainWindow() as any,
+        getString("settings-data-import-title"),
+        getString("settings-data-export-invalid"),
+      );
+      return;
+    }
 
     // 用对话框展示,方便复制
     const win = Zotero.getMainWindow().document;
@@ -264,12 +234,22 @@ export class DataSettingsPage {
     Object.assign(modal.style, {
       width: "720px",
       maxWidth: "90vw",
-      background: "#fff",
+      background: "var(--ai-surface)",
+      color: "var(--ai-text)",
       borderRadius: "8px",
       padding: "16px",
       boxShadow: "0 10px 30px rgba(0,0,0,.2)",
     });
+    overlay.className = "ai-butler-root";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-label", getString("settings-data-export-json"));
+    const notice = win.createElement("p");
+    notice.textContent = getString("settings-data-transfer-notice");
+    modal.appendChild(notice);
     const ta = win.createElement("textarea");
+    ta.readOnly = true;
+    ta.setAttribute("aria-label", getString("settings-data-export-json"));
     Object.assign(ta.style, {
       width: "100%",
       height: "360px",
@@ -281,11 +261,24 @@ export class DataSettingsPage {
       getString("settings-data-close"),
       "#9e9e9e",
     );
-    close.addEventListener("click", () => overlay.remove());
+    const focused = win.activeElement as HTMLElement | null;
+    const dismiss = () => {
+      overlay.remove();
+      focused?.focus();
+    };
+    close.addEventListener("click", dismiss);
+    overlay.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.key === "Escape") dismiss();
+      if (event.key === "Tab") {
+        event.preventDefault();
+        (win.activeElement === ta ? close : ta).focus();
+      }
+    });
     modal.appendChild(ta);
     modal.appendChild(close);
     overlay.appendChild(modal);
     (win.body ?? win.documentElement)!.appendChild(overlay);
+    ta.focus();
   }
 
   private importSettings(): void {
@@ -294,25 +287,25 @@ export class DataSettingsPage {
     const ok = Services.prompt.prompt(
       win,
       getString("settings-data-import-title"),
-      getString("settings-data-import-prompt"),
+      getString("settings-data-import-safe-prompt"),
       text,
       "",
       { value: false },
     );
     if (!ok || !text.value) return;
     try {
-      const obj = JSON.parse(text.value);
-      Object.entries(obj).forEach(([k, v]) => {
-        try {
-          setPref(k as any, v as any);
-        } catch (e) {
-          // 忽略无法设置的项，继续处理其他项
-          return;
-        }
-      });
+      const settings = parseSettingsImport(text.value);
+      applySettingsImport(
+        settings,
+        (key) => getPref(key as any),
+        (key, value) => {
+          setPref(key as any, value as any);
+        },
+        clearPref,
+      );
       new ztoolkit.ProgressWindow(getString("settings-data-import-title"))
         .createLine({
-          text: getString("settings-data-import-success"),
+          text: getString("settings-data-import-safe-success"),
           type: "success",
         })
         .show();

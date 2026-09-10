@@ -519,6 +519,9 @@ export class EndpointSettingsPanel {
     const button = document.createElement("button");
     button.type = "button";
     button.title = checked ? t("endpoint-enabled") : t("endpoint-off");
+    button.setAttribute("role", "switch");
+    button.setAttribute("aria-checked", String(checked));
+    button.setAttribute("aria-label", button.title);
     Object.assign(button.style, {
       width: "50px",
       height: "26px",
@@ -526,7 +529,7 @@ export class EndpointSettingsPanel {
       borderRadius: "999px",
       padding: "3px",
       cursor: "pointer",
-      background: checked ? "#4caf50" : "#bdbdbd",
+      background: checked ? "var(--ai-accent)" : "var(--ai-input-border)",
       transition: "background 0.2s ease",
       flex: "0 0 auto",
     });
@@ -577,9 +580,7 @@ export class EndpointSettingsPanel {
       justifyContent: "space-between",
       gap: "12px",
       padding: "12px",
-      background: endpoint.enabled
-        ? "rgba(76, 175, 80, 0.08)"
-        : "rgba(128, 128, 128, 0.08)",
+      background: "var(--ai-surface-2)",
       borderBottom: isExpanded ? "1px solid var(--ai-border)" : "none",
     });
 

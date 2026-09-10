@@ -49,7 +49,7 @@ function readTestLocaleMessages(locale = "zh-CN") {
 }
 
 let env = {};
-if (fs.existsSync(envPath)) {
+if (!process.argv.includes("--offline") && fs.existsSync(envPath)) {
   env = parseEnv(fs.readFileSync(envPath, "utf8"));
 }
 

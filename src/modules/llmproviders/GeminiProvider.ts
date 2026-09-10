@@ -1,3 +1,7 @@
+import {
+  secureRequest,
+  validateRemoteResourceUrl,
+} from "../../utils/secureRequest";
 import { ILlmProvider } from "./ILlmProvider";
 import {
   ConversationMessage,
@@ -116,7 +120,7 @@ export class GeminiProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": apiKey,
@@ -305,7 +309,7 @@ export class GeminiProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": apiKey,
@@ -509,7 +513,7 @@ export class GeminiProvider implements ILlmProvider {
     let response: any;
     const responseHeaders: Record<string, string> = {};
     try {
-      response = await Zotero.HTTP.request("POST", url, {
+      response = await secureRequest("POST", url, {
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": apiKey,
@@ -669,7 +673,7 @@ export class GeminiProvider implements ILlmProvider {
 
     let uploadUrl: string;
     try {
-      const startResponse = await Zotero.HTTP.request("POST", startUploadUrl, {
+      const startResponse = await secureRequest("POST", startUploadUrl, {
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": apiKey,
@@ -692,7 +696,7 @@ export class GeminiProvider implements ILlmProvider {
       if (!urlMatch) {
         throw new Error(providerRequestFailed("Gemini file upload"));
       }
-      uploadUrl = urlMatch[1].trim();
+      uploadUrl = validateRemoteResourceUrl(urlMatch[1].trim());
     } catch (error: any) {
       ztoolkit.log("[AI-Butler] Gemini 文件上传初始化失败:", error);
       throw new Error(
@@ -706,7 +710,7 @@ export class GeminiProvider implements ILlmProvider {
 
     // 步骤 2: 上传文件内容
     try {
-      const uploadResponse = await Zotero.HTTP.request("POST", uploadUrl, {
+      const uploadResponse = await secureRequest("POST", uploadUrl, {
         headers: {
           "Content-Length": String(numBytes),
           "X-Goog-Upload-Offset": "0",
@@ -827,7 +831,7 @@ export class GeminiProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": apiKey,

@@ -21,18 +21,18 @@ ai-butler-prefpane-open-dashboard =
 ai-butler-prefpane-open-dashboard-help = 点击上方按钮打开管家主界面，在“设置”标签页中配置 API、提示词等所有选项。
 
 # Settings: model platform and endpoints
-settings-nav-model-platform = 🧩 模型平台
-settings-nav-api = 🔌 API 配置
-settings-nav-summary-prompt = 📝 AI 总结提示词
-settings-nav-deep-read-prompt = 📚 AI 精读提示词
-settings-nav-table-prompt = 📊 表格总结提示词
-settings-nav-mindmap = 🧠 思维导图
-settings-nav-image-summary = 🖼️ 一图总结
-settings-nav-note-export = 📤 笔记自动导出
-settings-nav-ui = 🎨 界面设置
-settings-nav-data = 💾 数据管理
-settings-nav-about = ℹ️ 关于
-settings-model-platform-title = 🧩 模型平台
+settings-nav-model-platform = 模型平台
+settings-nav-api = API 配置
+settings-nav-summary-prompt = AI 总结提示词
+settings-nav-deep-read-prompt = AI 精读提示词
+settings-nav-table-prompt = 表格总结提示词
+settings-nav-mindmap = 思维导图
+settings-nav-image-summary = 一图总结
+settings-nav-note-export = 笔记自动导出
+settings-nav-ui = 界面设置
+settings-nav-data = 数据管理
+settings-nav-about = 关于
+settings-model-platform-title = 模型平台
 settings-model-platform-description = 添加并管理一个或多个大模型供应商。这里负责供应商类型、API 地址、API 密钥、模型、路由策略、最大 API 请求次数和多模型同时总结。
 endpoint-reasoning-default = 默认：依赖模型默认行为，不作任何配置
 endpoint-reasoning-none = 关闭：禁用推理
@@ -114,7 +114,7 @@ endpoint-copy-failed = 复制失败，可手动选择详情文本
 endpoint-copy-success = 已复制测试详情
 
 # Settings: data management
-settings-data-title = 💾 数据管理
+settings-data-title = 数据管理
 settings-data-description = 包含任务队列清理、设置导入/导出与一键重置等工具。
 settings-data-stat-total = 总任务
 settings-data-stat-completed = 已完成
@@ -147,7 +147,7 @@ settings-data-clear-empty-done = ✅ 已扫描 { $scanned } 篇论文，删除 {
 settings-data-operation-failed = ❌ 操作失败：{ $message }
 
 # Settings: mind map
-settings-mindmap-title = 🧠 思维导图设置
+settings-mindmap-title = 思维导图设置
 settings-mindmap-description = 配置思维导图生成的提示词模板和导出文件路径。自定义提示词可以改变思维导图的结构和内容风格。
 settings-mindmap-prompt-section = 📝 提示词模板
 settings-mindmap-prompt-notice = 提示词决定了思维导图的结构。默认包含四个大类（研究背景、研究方法、关键结果、结论），您可以自由修改。留空使用默认模板。
@@ -255,7 +255,7 @@ endpoint-pdf-mineru-short = MinerU
 endpoint-effective-pdf-mode = 实际使用：{ $mode }
 
 # Settings: note export
-settings-note-export-title = 📤 笔记自动导出
+settings-note-export-title = 笔记自动导出
 settings-note-export-subtitle = 当监听分类中的论文已生成 AI 总结与 AI 精读后，自动整理附件、DOCX 与 Markdown 到指定目录。
 settings-note-export-watched-collections = 监听分类
 settings-note-export-include-subcollections-short = 包含子分类
@@ -311,9 +311,9 @@ settings-note-export-no-format-selected = 未选择格式
 settings-note-export-progress-title = AI 笔记导出
 
 # Settings: image summary
-settings-image-summary-title = 🖼️ 一图总结设置
+settings-image-summary-title = 一图总结设置
 settings-image-summary-description = 一图总结使用生图模型为论文生成学术概念海报。支持 Gemini 原生接口与 OpenAI 兼容接口；可先用预设快速接入服务，再按需微调 API 与生成参数。
-settings-image-summary-api-title = 🔌 API 连接
+settings-image-summary-api-title = API 连接
 settings-image-summary-api-description = 填写用于生成图片的服务地址、密钥和模型。首次使用可以先在上方选择一个常用服务。
 settings-image-summary-request-mode-gemini = Gemini 原生接口 (x-goog-api-key)
 settings-image-summary-request-mode-openai = OpenAI 兼容接口 (Bearer)
@@ -329,7 +329,7 @@ settings-image-summary-model = 生图模型
 settings-image-summary-model-help = Gemini 推荐 gemini-3-pro-image-preview；OpenAI 兼容生图可填写 gpt-image-2、agnes-image-2.1-flash、qwen-image-2.0 等模型。
 settings-image-summary-timeout = 生图请求超时时间 (秒)
 settings-image-summary-timeout-help = 一图总结第二阶段生图请求的超时时间，默认 600 秒 (10 分钟)，最小 30 秒。
-settings-image-summary-generation-title = ⚙️ 生成选项
+settings-image-summary-generation-title = 生成选项
 settings-image-summary-generation-description = 控制图片文字语言、比例和分辨率。兼容服务较多时，建议先关闭高级参数跑通 API。
 settings-image-summary-language = 图片语言
 settings-image-summary-language-help = 生成图片中显示的文字语言。
@@ -347,7 +347,7 @@ settings-image-summary-disabled = 已禁用
 settings-image-summary-enabled = 已启用
 settings-image-summary-auto-add = 自动添加一图总结
 settings-image-summary-auto-add-help = ⚠️ 开启后，论文 AI 总结完成时将自动生成一图总结，可能消耗大量 API 费用。
-settings-image-summary-prompt-title = 📝 提示词配置
+settings-image-summary-prompt-title = 提示词配置
 settings-image-summary-prompt-description = 这里决定图片里讲什么、怎么讲。通常保持默认即可，有固定风格需求时再调整。
 settings-image-summary-available-variables = 📌 <strong>可用变量</strong>：<code>context</code> 论文内容, <code>title</code> 论文标题, <code>language</code> 语言设置, <code>summaryForImage</code> 视觉摘要结果
 settings-image-summary-visual-prompt = 视觉信息提取提示词
@@ -398,7 +398,7 @@ settings-image-summary-preview = 预览：{ $endpoint }
 settings-image-summary-toggle-key = 显示/隐藏密钥
 
 # Settings: UI
-settings-ui-title = 🎨 界面设置
+settings-ui-title = 界面设置
 settings-ui-description = 界面与行为设置：自动滚动、自动扫描；以及已有 AI 总结 / AI 精读时的处理策略。
 settings-ui-auto-scroll = 自动滚动到最新输出
 settings-ui-auto-scroll-help = 生成笔记时，自动滚动到输出窗口底部
@@ -474,7 +474,7 @@ settings-ui-sidebar-module-quickChat-label = 快速提问
 settings-ui-sidebar-module-quickChat-description = 在侧边栏内对当前论文进行临时追问
 
 # About settings page
-settings-about-title = ℹ️ 关于
+settings-about-title = 关于
 settings-about-open-tutorial = 🎓 打开新手教程
 settings-about-quote-line-1 = 文献下载一时爽，打开阅读火葬场。
 settings-about-quote-line-2 = 天书难啃骨头硬，管家嚼碎再喂粮。
@@ -516,7 +516,7 @@ settings-prompts-language-auto = 跟随 Zotero 界面语言
 settings-prompts-language-zh = 中文
 settings-prompts-language-en = English
 settings-prompts-language-saved = 默认提示词语言已保存。
-settings-prompts-multi-round-title = 📋 AI 精读多轮提示词模板
+settings-prompts-multi-round-title = AI 精读多轮提示词模板
 settings-prompts-new-preset = ✨ 新建预设
 settings-prompts-restore-builtins = ♻️ 恢复内置预设
 settings-prompts-save-current-template = 💾 保存当前模板
@@ -532,9 +532,9 @@ settings-prompts-restore-builtins-noop = 当前没有被修改过的内置预设
 settings-prompts-restore-builtins-dialog-title = 恢复内置预设
 settings-prompts-restore-builtins-dialog-message = 以下被修改过的内置预设将恢复为系统默认值：{ $names } 其他自定义预设不会被改动。是否继续？
 settings-prompts-restore-builtins-done = 内置预设已恢复。
-settings-prompts-template-library-title = 🧩 模板库
+settings-prompts-template-library-title = 模板库
 settings-prompts-template-library-subtitle = 选择、新建、删除或恢复总结提示词预设。选择后会立即生效。
-settings-prompts-editor-panel-title = ✍️ 模板编辑器
+settings-prompts-editor-panel-title = 模板编辑器
 settings-prompts-editor-panel-subtitle = 编辑当前预设。默认模板只读；其他模板可直接保存到当前模板。
 settings-prompts-select-preset-label = 选择预设
 settings-prompts-select-preset-help = 切换预设会立即应用。右侧编辑器始终显示当前生效的总结提示词。
@@ -749,9 +749,9 @@ settings-api-reset-global-title = 重置 API 配置
 settings-api-reset-global-confirm = 确定要重置 API 全局配置为默认值吗？模型平台、供应商密钥和路由设置不会被重置。
 settings-api-reset-legacy-title = 重置设置
 settings-api-reset-legacy-confirm = 确定要重置为默认设置吗?
-settings-api-page-title = 🔌 API 配置
-settings-api-schedule-section-title = 📅 调度配置
-settings-api-pdf-section-title = 📄 PDF 处理配置
+settings-api-page-title = API 配置
+settings-api-schedule-section-title = 调度配置
+settings-api-pdf-section-title = PDF 处理配置
 settings-api-mineru-section-title = MinerU 解析配置
 settings-api-mineru-section-subtitle = 全局或单个模型选择 MinerU 时共用
 settings-api-key-short-label = 密钥{ $index }

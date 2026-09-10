@@ -1,6 +1,7 @@
 import { marked } from "marked";
 import katex from "katex";
 import { getString } from "../utils/locale";
+import { sanitizeUntrustedHtml } from "../utils/safeHtml";
 
 type ProtectedFormula = {
   content: string;
@@ -178,8 +179,7 @@ export function markdownToZoteroNoteHtml(markdown: string): string {
     gfm: true,
   });
 
-  let html = marked.parse(processedMarkdown) as string;
-  html = html.replace(/\s+style="[^"]*"/g, "");
+  let html = sanitizeUntrustedHtml(marked.parse(processedMarkdown) as string);
 
   html = html.replace(
     /<p>\s*FORMULA_BLOCK_(\d+)_END\s*<\/p>|<p>\s*FORMULA_INLINE_(\d+)_END\s*<\/p>|FORMULA_(BLOCK|INLINE)_(\d+)_END/g,
@@ -274,7 +274,7 @@ export function markdownToDisplayHtml(markdown: string): string {
   });
 
   try {
-    html = marked.parse(html) as string;
+    html = sanitizeUntrustedHtml(marked.parse(html) as string);
   } catch {
     html = `<p>${escapeHtml(html)}</p>`;
   }
@@ -290,7 +290,7 @@ export function markdownToDisplayHtml(markdown: string): string {
         throwOnError: false,
         displayMode: isBlock,
         output: "html",
-        trust: true,
+        trust: false,
         strict: false,
       });
 

@@ -153,6 +153,9 @@
         el.textContent = window.aiButlerL10n(el.dataset.i18nText);
       });
       document.title = window.aiButlerL10n("pageTitle");
+      const channelToken = new URLSearchParams(location.hash.slice(1)).get(
+        "channel",
+      );
       let markmap = null;
       let currentMarkdown = "";
 
@@ -177,6 +180,11 @@
           const { Transformer } = window.markmap;
           const transformer = new Transformer();
           const { root } = transformer.transform(markdown);
+          const sanitizeNodes = (node) => {
+            node.content = window.markmap.sanitize(node.content || "", window);
+            (node.children || []).forEach(sanitizeNodes);
+          };
+          sanitizeNodes(root);
 
           // 创建 Markmap 实例
           const { Markmap } = window.markmap;
@@ -184,7 +192,10 @@
             svg,
             {
               autoFit: true,
-              duration: 500,
+              duration: window.matchMedia("(prefers-reduced-motion: reduce)")
+                .matches
+                ? 0
+                : 180,
               maxWidth: 300,
             },
             root,
@@ -193,11 +204,8 @@
           console.log("[AI-Butler Mindmap] 渲染成功");
         } catch (err) {
           console.error("[AI-Butler Mindmap] 渲染失败:", err);
-          container.innerHTML =
-            '<div class="error">' +
-            window.aiButlerL10n("renderFailed") +
-            err.message +
-            "</div>";
+          container.textContent =
+            window.aiButlerL10n("renderFailed") + String(err.message);
         }
       }
 
@@ -258,7 +266,10 @@
 
         openBtn.addEventListener("click", () => {
           try {
-            window.parent.postMessage({ type: "open-mindmap-viewer" }, "*");
+            window.parent.postMessage(
+              { type: "open-mindmap-viewer", channelToken },
+              "*",
+            );
           } catch (e) {}
         });
       })();
@@ -366,6 +377,7 @@
               window.parent.postMessage(
                 {
                   type: "export-mindmap",
+                  channelToken,
                   format: "png",
                   dataUrl: dataUrl,
                   filename: "mindmap-" + Date.now() + ".png",
@@ -410,6 +422,7 @@
             window.parent.postMessage(
               {
                 type: "export-mindmap",
+                channelToken,
                 format: "opml",
                 content: opmlContent,
                 filename: "mindmap-" + Date.now() + ".opml",
@@ -500,13 +513,15 @@
 
       // 监听来自父窗口的消息
       window.addEventListener("message", (event) => {
+        if (event.source !== null && event.source !== window.parent) return;
+        if (!channelToken || event.data?.channelToken !== channelToken) return;
         if (event.data && event.data.type === "render-mindmap") {
           initMindmap(event.data.markdown);
         }
       });
 
       // 通知父窗口已加载完成
-      window.parent.postMessage({ type: "mindmap-ready" }, "*");
+      window.parent.postMessage({ type: "mindmap-ready", channelToken }, "*");
     </script>
   </body>
 </html>

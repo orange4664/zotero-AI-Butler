@@ -9,6 +9,7 @@
  * 检测是否为暗色模式
  */
 import { getString } from "../../../utils/locale";
+import { sanitizeUntrustedHtml } from "../../../utils/safeHtml";
 
 function isDarkMode(): boolean {
   try {
@@ -42,121 +43,36 @@ export function createStyledButton(
   const doc = Zotero.getMainWindow().document;
   const button = doc.createElement("button");
 
-  // 尺寸映射
-  const sizeMap = {
-    small: { padding: "8px 16px", fontSize: "12px" },
-    medium: { padding: "10px 20px", fontSize: "14px" },
-    large: { padding: "15px", fontSize: "14px" },
-  };
-  const sizeStyle = sizeMap[size];
-  const maxFontSize = parseInt(sizeStyle.fontSize, 10) || 14;
-  const minFontSize = size === "small" ? 10 : 11;
-
-  // 初始样式
-  const baseStyle = {
-    padding: sizeStyle.padding,
-    border: `2px solid ${color}`,
-    borderRadius: "6px",
-    fontSize: sizeStyle.fontSize,
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    outline: "none",
-    // 文字垂直居中
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "10px",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    lineHeight: "1.1",
-    minWidth: "0",
-  };
-
-  // 设置初始状态 - 白色背景，文字显示颜色
+  button.type = "button";
+  button.className = `ai-button ai-button--${size}`;
+  button.dataset.variant = ["#f44336", "#d32f2f", "#c62828"].includes(
+    color.toLowerCase(),
+  )
+    ? "danger"
+    : color === "var(--ai-accent)"
+      ? "primary"
+      : "secondary";
+  // Existing callers pass trusted label markup (small icons/emphasis).
+  // Sanitize it too, so future callers cannot turn a label into an HTML sink.
+  button.innerHTML = sanitizeUntrustedHtml(text);
   Object.assign(button.style, {
-    ...baseStyle,
-    backgroundColor: "#ffffff",
-    color: color,
-  });
-
-  // 支持 HTML（如 emoji + 文本）
-  button.innerHTML = text;
-
-  // 根据按钮宽度自动缩小字体，避免文字溢出/换行
-  const fitText = () => {
-    if (!button.isConnected) return;
-
-    // 如果按钮不可见或宽度为0，跳过计算
-    if (button.clientWidth === 0) return;
-
-    let font = maxFontSize;
-    button.style.fontSize = `${font}px`;
-
-    // 核心修复：只有当内容真正溢出容器时才缩小字体
-    while (font > minFontSize && button.scrollWidth > button.clientWidth) {
-      font -= 1;
-      button.style.fontSize = `${font}px`;
-    }
-  };
-
-  // 初次渲染后拟合
-  setTimeout(fitText, 0);
-
-  // 尺寸变化时重算
-  if (typeof ResizeObserver !== "undefined") {
-    const observer = new ResizeObserver(() => fitText());
-    observer.observe(button);
-    button.addEventListener("DOMNodeRemoved", () => observer.disconnect(), {
-      once: true,
-    });
-  } else {
-    const win = doc.defaultView;
-    if (win) {
-      win.addEventListener("resize", fitText);
-      button.addEventListener(
-        "DOMNodeRemoved",
-        () => win.removeEventListener("resize", fitText),
-        { once: true },
-      );
-    }
-  }
-
-  // 悬停效果：背景变色，文字变白
-  button.addEventListener("mouseenter", () => {
-    button.style.backgroundColor = color;
-    // 使用 important 避免被宿主样式覆盖导致文字不可见
-    button.style.setProperty("color", "#000000", "important");
-    button.style.transform = "translateY(-1px)";
-    button.style.boxShadow = `0 2px 8px ${color}40`;
-  });
-
-  button.addEventListener("mouseleave", () => {
-    // 检测暗色模式
-    let isDark = false;
-    try {
-      isDark =
-        Services.prefs.getBoolPref("zotero.theme.dark", false) ||
-        Services.prefs.getBoolPref("ui.systemUsesDarkTheme", false);
-    } catch (e) {
-      // 使用默认值
-    }
-
-    button.style.backgroundColor = isDark ? "#2b2b2b" : "#ffffff";
-    button.style.setProperty("color", color, "important");
-    button.style.transform = "translateY(0)";
-    button.style.boxShadow = "none";
-  });
-
-  // 点击效果
-  button.addEventListener("mousedown", () => {
-    button.style.transform = "translateY(0)";
-  });
-
-  button.addEventListener("mouseup", () => {
-    button.style.transform = "translateY(-1px)";
-    fitText();
+    padding:
+      size === "small"
+        ? "7px 12px"
+        : size === "large"
+          ? "12px 16px"
+          : "9px 14px",
+    border: "1px solid var(--ai-border, #dce1e7)",
+    borderRadius: "8px",
+    background: "var(--ai-surface, #fff)",
+    color: "var(--ai-text, #20252b)",
+    font: "inherit",
+    fontSize: "14px",
+    lineHeight: "1.5",
+    whiteSpace: "normal",
+    overflowWrap: "anywhere",
+    cursor: "pointer",
+    minWidth: "0",
   });
 
   return button;
@@ -192,6 +108,10 @@ export function createFormGroup(
       fontWeight: "600",
       color: "var(--ai-text)",
     });
+    const control = input.matches("input, select, textarea")
+      ? input
+      : input.querySelector("input, select, textarea");
+    if (control?.id) labelElement.htmlFor = control.id;
     group.appendChild(labelElement);
   }
 
@@ -207,6 +127,13 @@ export function createFormGroup(
       color: "var(--ai-text-muted)",
       lineHeight: "1.4",
     });
+    const control = input.matches("input, select, textarea")
+      ? input
+      : input.querySelector("input, select, textarea");
+    if (control?.id) {
+      desc.id = `${control.id}-description`;
+      control.setAttribute("aria-describedby", desc.id);
+    }
     group.appendChild(desc);
   }
 
@@ -227,6 +154,10 @@ export function createInput(
   input.type = type;
   input.id = `setting-${id}`;
   input.value = value || "";
+  if (type === "password") {
+    input.autocomplete = "off";
+    input.spellcheck = false;
+  }
   if (placeholder) input.placeholder = placeholder;
 
   const currentIsDark = isDarkMode();
@@ -245,7 +176,7 @@ export function createInput(
 
   input.addEventListener("focus", () => {
     input.style.borderColor = "#59c0bc";
-    input.style.outline = "none";
+
     input.style.boxShadow = "0 0 0 3px rgba(89, 192, 188, 0.1)";
   });
 
@@ -284,14 +215,14 @@ export function createTextarea(
     backgroundColor: currentIsDark ? "#2a2a2a" : "#fff",
     color: currentIsDark ? "#e0e0e0" : "#333",
     boxSizing: "border-box",
-    fontFamily: "Consolas, Menlo, monospace",
+    fontFamily: "var(--ai-font-code, monospace)",
     lineHeight: "1.5",
     resize: "vertical",
   });
 
   textarea.addEventListener("focus", () => {
     textarea.style.borderColor = "#59c0bc";
-    textarea.style.outline = "none";
+
     textarea.style.boxShadow = "0 0 0 3px rgba(89, 192, 188, 0.1)";
   });
 
@@ -635,7 +566,8 @@ export function createNotice(
     fontSize: "14px",
     color: p.fg,
   });
-  el.innerHTML = html;
+  el.className = `ai-notice ai-notice--${type}`;
+  el.innerHTML = sanitizeUntrustedHtml(html);
   return el;
 }
 

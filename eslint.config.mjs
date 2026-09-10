@@ -3,6 +3,7 @@
 import zotero from "@zotero-plugin/eslint-config";
 
 export default [
+  { ignores: ["addon/content/markmap-bundle.js"] },
   ...zotero({
     overrides: [
       {

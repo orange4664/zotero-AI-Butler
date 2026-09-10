@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ================================================================
  * 仪表盘视图
  * ================================================================
@@ -137,9 +137,6 @@ export class DashboardView extends BaseView {
       },
     );
 
-    // 启动定时刷新
-    this.startRefreshTimer();
-
     // 立即刷新一次数据
     this.refreshData();
 
@@ -184,7 +181,7 @@ export class DashboardView extends BaseView {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "var(--ai-font-ui)",
         overflow: "auto",
       },
     });
@@ -229,10 +226,10 @@ export class DashboardView extends BaseView {
           styles: {
             margin: "0 0 20px 0",
             fontSize: "20px",
-            borderBottom: "2px solid #59c0bc",
+            borderBottom: "1px solid var(--ai-border)",
             paddingBottom: "10px",
           },
-          innerHTML: getString("dashboard-title"),
+          textContent: getString("dashboard-title"),
         }),
       ],
     });
@@ -246,23 +243,28 @@ export class DashboardView extends BaseView {
   private createStatusCard(): HTMLElement {
     const card = this.createElement("div", {
       id: "butler-status-card",
+      className: "ai-status-panel",
+      attributes: { role: "status", "aria-live": "polite" },
       styles: {
         margin: "0 20px 20px 20px",
         padding: "30px",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "var(--ai-surface)",
         borderRadius: "12px",
-        color: "#fff",
-        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+        color: "var(--ai-text)",
+        border: "1px solid var(--ai-border)",
       },
     });
 
     const statusIcon = this.createElement("div", {
       id: "status-icon",
       styles: {
-        fontSize: "48px",
-        marginBottom: "15px",
+        width: "10px",
+        height: "10px",
+        borderRadius: "50%",
+        backgroundColor: "var(--ai-text-muted)",
+        marginBottom: "18px",
       },
-      textContent: "😴",
+      attributes: { "aria-hidden": "true" },
     });
 
     const statusText = this.createElement("div", {
@@ -286,6 +288,7 @@ export class DashboardView extends BaseView {
       }),
     });
 
+    card.dataset.status = "idle";
     card.appendChild(statusIcon);
     card.appendChild(statusText);
     card.appendChild(statusDetail);
@@ -332,14 +335,14 @@ export class DashboardView extends BaseView {
         this.createStatCard(
           "success-rate",
           getString("dashboard-stat-success-rate"),
-          "100%",
+          "—",
           "#9c27b0",
           "✨",
         ),
         this.createStatCard(
           "avg-time",
           getString("dashboard-stat-average-time"),
-          "0s",
+          "—",
           "#607d8b",
           "⚡",
         ),
@@ -367,9 +370,7 @@ export class DashboardView extends BaseView {
     icon: string,
   ): HTMLElement {
     const card = createCard("stat", label, undefined, {
-      accentColor: color,
       value,
-      icon,
       classes: ["stat-card"],
     });
     // 设置元素 id，便于后续更新
@@ -399,6 +400,7 @@ export class DashboardView extends BaseView {
     });
 
     const actionsGrid = this.createElement("div", {
+      className: "ai-quick-actions",
       styles: {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -441,7 +443,7 @@ export class DashboardView extends BaseView {
         id: "clear-completed",
         icon: "🗑️",
         label: getString("dashboard-action-clear-completed"),
-        color: "#9e9e9e",
+        color: "var(--ai-text-muted)",
       },
       {
         id: "open-settings",
@@ -465,8 +467,8 @@ export class DashboardView extends BaseView {
 
     actions.forEach((action) => {
       const button = createStyledButton(
-        `<span style="font-size: 20px;">${action.icon}</span> ${action.label}`,
-        action.color,
+        action.label,
+        action.id === "scan-summary" ? "var(--ai-accent)" : "var(--ai-text)",
         "large",
       );
 
@@ -478,8 +480,25 @@ export class DashboardView extends BaseView {
         button.id = "ai-butler-quick-action-onboarding";
       }
 
-      button.addEventListener("click", () => {
-        this.handleQuickAction(action.id);
+      button.addEventListener("click", async () => {
+        button.disabled = true;
+        button.setAttribute("aria-busy", "true");
+        try {
+          await this.handleQuickAction(action.id);
+        } catch (error) {
+          new ztoolkit.ProgressWindow("AI Butler")
+            .createLine({
+              text:
+                error instanceof Error
+                  ? error.message
+                  : getString("dashboard-unknown-error"),
+              type: "fail",
+            })
+            .show();
+        } finally {
+          button.disabled = false;
+          button.removeAttribute("aria-busy");
+        }
       });
 
       actionsGrid.appendChild(button);
@@ -516,7 +535,7 @@ export class DashboardView extends BaseView {
     const activityList = this.createElement("div", {
       id: "activity-list",
       styles: {
-        backgroundColor: "rgba(89, 192, 188, 0.03)",
+        backgroundColor: "var(--ai-surface-2)",
         borderRadius: "8px",
         padding: "15px",
         maxHeight: "300px",
@@ -529,7 +548,7 @@ export class DashboardView extends BaseView {
         styles: {
           textAlign: "center",
           padding: "40px 20px",
-          color: "#9e9e9e",
+          color: "var(--ai-text-muted)",
           fontSize: "14px",
         },
         textContent: getString("dashboard-no-recent-activities"),
@@ -565,9 +584,9 @@ export class DashboardView extends BaseView {
 
     if (!statusIcon || !statusText || !statusDetail) return;
 
+    this.statusCard.dataset.status = status;
     switch (status) {
       case ButlerStatus.WORKING:
-        statusIcon.textContent = "🧐";
         statusText.textContent = getString("dashboard-status-working");
         statusDetail.textContent = currentItem
           ? getString("dashboard-status-reading", {
@@ -581,26 +600,18 @@ export class DashboardView extends BaseView {
               },
             })
           : getString("dashboard-status-processing");
-        this.statusCard.style.background =
-          "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)";
         break;
 
       case ButlerStatus.IDLE:
-        statusIcon.textContent = "😴";
         statusText.textContent = getString("dashboard-status-idle");
         statusDetail.textContent = getString("dashboard-status-idle-detail", {
           args: { count: this.stats.totalProcessed },
         });
-        this.statusCard.style.background =
-          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
         break;
 
       case ButlerStatus.ERROR:
-        statusIcon.textContent = "😵";
         statusText.textContent = getString("dashboard-status-error");
         statusDetail.textContent = getString("dashboard-status-error-detail");
-        this.statusCard.style.background =
-          "linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)";
         break;
     }
   }
@@ -621,9 +632,16 @@ export class DashboardView extends BaseView {
     this.updateStatValue("pending", this.stats.pendingCount.toString());
     this.updateStatValue(
       "success-rate",
-      `${this.stats.successRate.toFixed(1)}%`,
+      this.stats.totalProcessed + this.stats.failedCount > 0
+        ? `${this.stats.successRate.toFixed(1)}%`
+        : "—",
     );
-    this.updateStatValue("avg-time", `${this.stats.averageTime.toFixed(0)}s`);
+    this.updateStatValue(
+      "avg-time",
+      this.stats.totalProcessed > 0
+        ? `${this.stats.averageTime.toFixed(0)}s`
+        : "—",
+    );
     this.updateStatValue("failed", this.stats.failedCount.toString());
   }
 
@@ -675,7 +693,7 @@ export class DashboardView extends BaseView {
         styles: {
           textAlign: "center",
           padding: "40px 20px",
-          color: "#9e9e9e",
+          color: "var(--ai-text-muted)",
           fontSize: "14px",
         },
         textContent: getString("dashboard-no-recent-activities"),
@@ -837,7 +855,7 @@ export class DashboardView extends BaseView {
         break;
 
       case "clear-completed":
-        this.taskQueueManager.clearCompleted();
+        await this.taskQueueManager.clearCompleted();
         new ztoolkit.ProgressWindow("AI Butler")
           .createLine({
             text: getString("dashboard-completed-cleared"),
@@ -924,13 +942,6 @@ export class DashboardView extends BaseView {
       TaskStatus.PROCESSING,
     )[0];
 
-    // 更新管家状态
-    this.updateButlerStatus(
-      butlerStatus,
-      processingTask?.title,
-      queueStats.pending + queueStats.priority,
-    );
-
     // 计算平均处理时间
     const completedTasks = this.taskQueueManager
       .getAllTasks()
@@ -950,6 +961,13 @@ export class DashboardView extends BaseView {
       successRate: queueStats.successRate,
       averageTime: avgTime,
     });
+
+    // 更新管家状态
+    this.updateButlerStatus(
+      butlerStatus,
+      processingTask?.title,
+      queueStats.pending + queueStats.priority,
+    );
 
     // 从队列加载最近活动
     this.loadRecentActivitiesFromQueue();
@@ -1021,7 +1039,7 @@ export class DashboardView extends BaseView {
     ztoolkit.log(`任务进度: ${taskId} - ${progress}% - ${message}`);
 
     // 刷新数据以更新状态
-    this.refreshData();
+    if (this.isVisible) this.refreshData();
   }
 
   /**
@@ -1089,5 +1107,10 @@ export class DashboardView extends BaseView {
    */
   protected onShow(): void {
     this.refreshData();
+    this.startRefreshTimer();
+  }
+
+  protected onHide(): void {
+    this.stopRefreshTimer();
   }
 }

@@ -1,3 +1,4 @@
+import { secureRequest } from "../../utils/secureRequest";
 import { ILlmProvider } from "./ILlmProvider";
 import {
   ConversationMessage,
@@ -137,7 +138,7 @@ export class OpenAIProvider implements ILlmProvider {
         let cleanupAbortSignal: (() => void) | undefined;
 
         try {
-          await Zotero.HTTP.request("POST", responsesUrl, {
+          await secureRequest("POST", responsesUrl, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${apiKey}`,
@@ -283,7 +284,7 @@ export class OpenAIProvider implements ILlmProvider {
       let abortError: Error | null = null;
       let cleanupAbortSignal: (() => void) | undefined;
       try {
-        const res = await Zotero.HTTP.request("POST", responsesUrl, {
+        const res = await secureRequest("POST", responsesUrl, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
@@ -367,7 +368,7 @@ export class OpenAIProvider implements ILlmProvider {
       let cleanupAbortSignal: (() => void) | undefined;
 
       try {
-        await Zotero.HTTP.request("POST", apiUrl, {
+        await secureRequest("POST", apiUrl, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
@@ -613,7 +614,7 @@ export class OpenAIProvider implements ILlmProvider {
         let abortError: Error | null = null;
         let cleanupAbortSignal: (() => void) | undefined;
         try {
-          const res = await Zotero.HTTP.request("POST", responsesUrl, {
+          const res = await secureRequest("POST", responsesUrl, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${apiKey}`,
@@ -682,7 +683,7 @@ export class OpenAIProvider implements ILlmProvider {
       let cleanupAbortSignal: (() => void) | undefined;
 
       try {
-        await Zotero.HTTP.request("POST", responsesUrl, {
+        await secureRequest("POST", responsesUrl, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
@@ -868,7 +869,7 @@ export class OpenAIProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", apiUrl, {
+      await secureRequest("POST", apiUrl, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
@@ -1083,7 +1084,7 @@ export class OpenAIProvider implements ILlmProvider {
     let response: any;
     const responseHeaders: Record<string, string> = {};
     try {
-      response = await Zotero.HTTP.request("POST", responsesUrl, {
+      response = await secureRequest("POST", responsesUrl, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
@@ -1264,7 +1265,7 @@ export class OpenAIProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", responsesUrl, {
+      await secureRequest("POST", responsesUrl, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
@@ -1440,7 +1441,7 @@ export class OpenAIProvider implements ILlmProvider {
     let abortError: Error | null = null;
     let cleanupAbortSignal: (() => void) | undefined;
     try {
-      const res = await Zotero.HTTP.request("POST", apiUrl, {
+      const res = await secureRequest("POST", apiUrl, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,

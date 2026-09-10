@@ -116,18 +116,16 @@
           (window.__aiButlerMindmapMarkdown
             ? String(window.__aiButlerMindmapMarkdown)
             : "");
-        const prefsPrefix =
-          (args && args.prefsPrefix ? String(args.prefsPrefix) : "") ||
-          (window.__aiButlerPrefsPrefix
-            ? String(window.__aiButlerPrefsPrefix)
-            : "");
-
         document.title = title;
 
         const errorEl = document.getElementById("error");
         const frame = document.getElementById("frame");
+        const channelToken = Array.from(
+          crypto.getRandomValues(new Uint32Array(4)),
+          (value) => value.toString(16).padStart(8, "0"),
+        ).join("");
         frame.src = new URL(
-          "mindmap.html?mode=viewer",
+          "mindmap.html?mode=viewer#channel=" + channelToken,
           window.location.href,
         ).href;
 
@@ -136,16 +134,6 @@
           errorEl.textContent = window.aiButlerL10n("noContent");
           return;
         }
-
-        const getPref = (key) => {
-          if (!prefsPrefix) return undefined;
-          try {
-            if (typeof Zotero !== "undefined" && Zotero.Prefs) {
-              return Zotero.Prefs.get(`${prefsPrefix}.${key}`, true);
-            }
-          } catch (e) {}
-          return undefined;
-        };
 
         const notify = (title, text, type) => {
           try {
@@ -159,78 +147,33 @@
         };
 
         const saveExport = async (payload) => {
-          const format = payload.format || "png";
-          const filename = payload.filename || `mindmap.${format}`;
-
-          let downloadDir = "";
-          const customPath = String(getPref("mindmapExportPath") || "");
-
-          if (customPath && customPath.trim()) {
-            downloadDir = customPath.trim();
-            try {
-              await IOUtils.makeDirectory(downloadDir, {
-                ignoreExisting: true,
-              });
-            } catch (e) {
-              downloadDir = "";
-            }
-          }
-
-          if (!downloadDir) {
-            try {
-              const desktopDir = Services.dirsvc.get("Desk", Ci.nsIFile);
-              downloadDir = desktopDir.path;
-            } catch (e) {
-              try {
-                const dataDir = Zotero.DataDirectory.dir;
-                downloadDir = PathUtils.join(dataDir, "mindmaps");
-                await IOUtils.makeDirectory(downloadDir, {
-                  ignoreExisting: true,
-                });
-              } catch (e2) {
-                downloadDir = "";
-              }
-            }
-          }
-
-          if (!downloadDir) {
-            throw new Error("No writable export directory.");
-          }
-
-          const filePath = PathUtils.join(downloadDir, filename);
-
-          if (format === "png") {
-            const dataUrl = payload.dataUrl || "";
-            const base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
-            const binaryString = atob(base64Data);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-              bytes[i] = binaryString.charCodeAt(i);
-            }
-            await IOUtils.write(filePath, bytes);
-          } else if (format === "opml") {
-            const content = String(payload.content || "");
-            const encoder = new TextEncoder();
-            await IOUtils.write(filePath, encoder.encode(content));
-          }
+          const onExport = args.onExport || window.__aiButlerOnExport;
+          if (typeof onExport !== "function")
+            throw new Error("Export is unavailable");
+          const filePath = await onExport(payload);
 
           notify(
             window.aiButlerL10n("exportSavedTitle"),
             window.aiButlerL10nArgs("exportSavedText", { path: filePath }),
             "success",
           );
-          try {
-            Zotero.launchFile(filePath);
-          } catch (e) {}
         };
 
         window.addEventListener("message", (event) => {
+          if (event.source !== null && event.source !== frame.contentWindow)
+            return;
+          if (event.data?.channelToken !== channelToken) return;
+          try {
+            if (frame.contentWindow.location.href !== frame.src) return;
+          } catch {
+            return;
+          }
           if (!event.data || typeof event.data !== "object") return;
 
           if (event.data.type === "mindmap-ready") {
             try {
               frame.contentWindow.postMessage(
-                { type: "render-mindmap", markdown },
+                { type: "render-mindmap", markdown, channelToken },
                 "*",
               );
             } catch (e) {
@@ -255,7 +198,7 @@
           setTimeout(() => {
             try {
               frame.contentWindow.postMessage(
-                { type: "render-mindmap", markdown },
+                { type: "render-mindmap", markdown, channelToken },
                 "*",
               );
             } catch (e) {}

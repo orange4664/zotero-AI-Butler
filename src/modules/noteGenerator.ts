@@ -52,6 +52,7 @@ import { getPref } from "../utils/prefs";
 import { getString } from "../utils/locale";
 import { MainWindow } from "./views/MainWindow";
 import { marked } from "marked";
+import { sanitizeUntrustedHtml } from "../utils/safeHtml";
 import {
   getConfiguredTableFillPrompt,
   getConfiguredTableTemplate,
@@ -1026,7 +1027,7 @@ export class NoteGenerator {
       gfm: true, // 启用 GitHub Flavored Markdown
     });
 
-    let html = marked.parse(processedMarkdown) as string;
+    let html = sanitizeUntrustedHtml(marked.parse(processedMarkdown) as string);
 
     // 移除所有内联样式,Zotero 笔记不支持 style 属性
     html = html.replace(/\s+style="[^"]*"/g, "");

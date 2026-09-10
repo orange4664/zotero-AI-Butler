@@ -21,22 +21,22 @@ menuitem-fillTable = AI管家填表
 menuitem-clearCollectionAiNotes = 清空该分类 AI 管家笔记
 
 # Dashboard
-dashboard-title = 📊 仪表盘
-dashboard-status-idle = AI 管家正在休息
-dashboard-status-idle-detail = 管家已为您总结 { $count } 篇文献
-dashboard-status-working = AI 管家正在废寝忘食地工作
+dashboard-title = 工作概览
+dashboard-status-idle = 已就绪
+dashboard-status-idle-detail = 已为你整理 { $count } 篇文献，可开始新的阅读任务。
+dashboard-status-working = 正在阅读文献
 dashboard-status-reading = 正在阅读: { $title }{ $remaining }
 dashboard-status-remaining =  (还剩 { $count } 篇)
 dashboard-status-processing = 正在处理文献...
-dashboard-status-error = AI 管家遇到了问题
-dashboard-status-error-detail = 请检查配置或查看错误日志
+dashboard-status-error = 有任务需要处理
+dashboard-status-error-detail = 打开任务队列查看失败原因，然后重试。
 dashboard-stat-total = 总处理数
 dashboard-stat-today = 今日处理
 dashboard-stat-pending = 待处理
 dashboard-stat-success-rate = 成功率
 dashboard-stat-average-time = 平均用时
 dashboard-stat-failed = 失败数
-dashboard-quick-actions = ⚡ 快捷操作
+dashboard-quick-actions = 快捷操作
 dashboard-action-scan-summary = 扫描未总结论文
 dashboard-action-scan-deep-read = 扫描未精读论文
 dashboard-action-start-auto-scan = 开始自动扫描
@@ -44,9 +44,9 @@ dashboard-action-pause-auto-scan = 暂停自动扫描
 dashboard-action-task-queue = 查看任务队列
 dashboard-action-clear-completed = 清除已完成
 dashboard-action-open-settings = 打开设置
-dashboard-action-setup = 一键初始化配置
-dashboard-action-onboarding = 新手教程 / 重温教程
-dashboard-recent-activities = 🕒 最近活动
+dashboard-action-setup = 配置模型
+dashboard-action-onboarding = 使用指南
+dashboard-recent-activities = 最近活动
 dashboard-no-recent-activities = 暂无最近活动
 dashboard-time-now = 刚刚
 dashboard-time-minutes = { $count } 分钟前
@@ -1139,3 +1139,16 @@ llm-warning-attachment-as-text = 当前附件将按文本内容进行分析。
 llm-warning-auto-continuation-used = 检测到输出被截断，已自动续写 { $count } 轮。
 llm-warning-auto-continuation-still-truncated = 自动续写 { $count } 轮后输出仍被截断。建议调高 Max Tokens，或使用非推理模型/降低推理强度。
 llm-warning-auto-continuation-disabled = 检测到输出被截断，但自动续写轮数为 0，未继续调用 API。
+
+# Safe settings transfer
+settings-data-transfer-notice = 导出不包含 API 密钥。导入后请重新填写密钥并启用所需模型；自动扫描保持关闭。
+settings-data-import-safe-prompt = 粘贴设置 JSON。导入不接收密钥，会停用导入的模型和自动扫描；更改 API 地址会清除对应的旧密钥。
+settings-data-import-safe-success = 设置已导入。请检查模型地址、重新填写密钥，再手动启用模型和自动扫描。
+settings-data-export-invalid = 无法导出：请先检查模型配置和 API 地址。
+
+# Security boundary errors
+security-invalid-settings = 设置无效，请检查 JSON 字段、类型、模型地址和数值范围。
+security-invalid-export = 导出内容无效，仅支持大小合适、文件名安全的 PNG 或 OPML 文件。
+security-invalid-endpoint = 请使用有效的 HTTPS API 地址，不可含内嵌凭据或片段。本机回环地址可用 HTTP。
+security-request-failed = 请求失败，请检查 API 地址、网络和密钥。请求不跟随重定向。
+security-import-rollback = 导入失败，已恢复之前的设置。

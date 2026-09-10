@@ -1,3 +1,4 @@
+import { secureRequest } from "../../../utils/secureRequest";
 import { getString } from "../../../utils/locale";
 import type { LLMModelInfo } from "../types";
 import { providerHttpRequestFailed } from "./localizedErrors";
@@ -39,7 +40,7 @@ export async function requestModelListJson(
   timeout = 30000,
 ): Promise<unknown> {
   try {
-    const response = await Zotero.HTTP.request("GET", url, {
+    const response = await secureRequest("GET", url, {
       headers: {
         Accept: "application/json",
         ...headers,

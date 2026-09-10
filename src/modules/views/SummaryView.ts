@@ -26,6 +26,7 @@
 import { BaseView } from "./BaseView";
 import { MainWindow } from "./MainWindow";
 import { marked } from "marked";
+import { sanitizeUntrustedHtml } from "../../utils/safeHtml";
 import { getPref } from "../../utils/prefs";
 import { getConfiguredSummaryPrompt } from "../../utils/prompts";
 import { getString } from "../../utils/locale";
@@ -747,7 +748,7 @@ export class SummaryView extends BaseView {
           ".chat-message-content",
         ) as HTMLElement;
         if (contentDiv) {
-          contentDiv.innerHTML = `<p style="color: #d32f2f;">${getString("summary-error-inline", { args: { error: error?.message || String(error) } })}</p>`;
+          contentDiv.innerHTML = `<p style="color: #d32f2f;">${getString("summary-error-inline", { args: { error: this.escapeHtml(error?.message || String(error)) } })}</p>`;
         }
       }
     } finally {
@@ -2527,7 +2528,7 @@ export class SummaryView extends BaseView {
    */
   private convertMarkdownToHTML(markdown: string): string {
     // 总结页面显示原始公式文本，不使用 KaTeX 渲染
-    return marked.parse(markdown) as string;
+    return sanitizeUntrustedHtml(marked.parse(markdown) as string);
   }
 
   /**

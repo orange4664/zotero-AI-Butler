@@ -70,7 +70,7 @@ function applyHostFrame(host: HTMLElement): void {
     position: "relative",
     boxSizing: "border-box",
     backgroundColor: "var(--ai-bg)",
-    fontFamily: "system-ui, -apple-system, sans-serif",
+    fontFamily: "var(--ai-font-ui)",
   } as Partial<CSSStyleDeclaration>);
 }
 
@@ -105,7 +105,7 @@ export function createMainWindowScaffold<T extends string>(
       backgroundColor: "var(--ai-bg)",
       boxSizing: "border-box",
       color: "var(--ai-text)",
-      fontFamily: "system-ui, -apple-system, sans-serif",
+      fontFamily: "var(--ai-font-ui)",
     },
   });
 
@@ -134,6 +134,7 @@ export function createMainWindowScaffold<T extends string>(
     },
   });
 
+  topNav.setAttribute("role", "navigation");
   const tabButtons = new Map<T, HTMLElement>();
   for (const tab of tabs) {
     const button = createElement(doc, "button", {
@@ -159,7 +160,8 @@ export function createMainWindowScaffold<T extends string>(
         whiteSpace: "nowrap",
       },
     });
-    button.innerHTML = `${tab.icon} ${tab.label}`;
+    button.textContent = tab.label;
+    button.type = "button";
     button.addEventListener("click", () => onTabClick(tab.id));
     button.addEventListener("mouseenter", () => {
       if (!button.classList.contains("active")) {
@@ -175,6 +177,7 @@ export function createMainWindowScaffold<T extends string>(
     topNav.appendChild(button);
   }
 
+  bindNavigationKeys(topNav);
   root.append(topNav, viewPort);
   host.appendChild(root);
 
@@ -185,6 +188,7 @@ export function createMainWindowScaffold<T extends string>(
       tabButtons.forEach((button, id) => {
         const active = id === tabId;
         button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
         button.style.color = active
           ? "var(--ai-accent)"
           : "var(--ai-text-muted)";
@@ -235,7 +239,7 @@ export function createSettingsScaffold<T extends string>(
     styles: {
       minHeight: "0",
       minWidth: "0",
-      overflow: "hidden",
+      overflowY: "auto",
       padding: compact ? "12px 0" : "18px 0",
       borderRight: "1px solid var(--ai-border)",
       backgroundColor: "var(--ai-surface-2)",
@@ -301,21 +305,7 @@ export function createSettingsScaffold<T extends string>(
     settingsSidebar.appendChild(button);
   }
 
-  settingsSidebar.addEventListener(
-    "wheel",
-    (event: WheelEvent) => {
-      if (
-        !event.deltaY ||
-        !canScrollInDirection(settingsContent, event.deltaY)
-      ) {
-        return;
-      }
-      settingsContent.scrollTop += event.deltaY;
-      event.preventDefault();
-    },
-    { passive: false },
-  );
-
+  bindNavigationKeys(settingsSidebar);
   root.append(settingsSidebar, settingsContent);
   host.appendChild(root);
 
@@ -326,6 +316,7 @@ export function createSettingsScaffold<T extends string>(
       navButtons.forEach((button, id) => {
         const active = id === categoryId;
         button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
         button.style.backgroundColor = active
           ? "var(--ai-accent-tint)"
           : "transparent";
@@ -344,9 +335,37 @@ export function createSettingsScaffold<T extends string>(
   };
 }
 
-function canScrollInDirection(element: HTMLElement, deltaY: number): boolean {
-  if (deltaY > 0) {
-    return element.scrollTop + element.clientHeight < element.scrollHeight - 1;
-  }
-  return element.scrollTop > 0;
+function bindNavigationKeys(nav: HTMLElement): void {
+  nav.addEventListener("keydown", (event: KeyboardEvent) => {
+    if (
+      ![
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+      ].includes(event.key)
+    )
+      return;
+    const buttons = Array.from(
+      nav.querySelectorAll("button"),
+    ) as HTMLButtonElement[];
+    const index = buttons.indexOf(
+      nav.ownerDocument?.activeElement as HTMLButtonElement,
+    );
+    if (index < 0) return;
+    event.preventDefault();
+    const next =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? buttons.length - 1
+          : (index +
+              (["ArrowLeft", "ArrowUp"].includes(event.key) ? -1 : 1) +
+              buttons.length) %
+            buttons.length;
+    buttons[next].focus();
+    buttons[next].click();
+  });
 }

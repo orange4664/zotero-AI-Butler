@@ -125,7 +125,21 @@ export class APITestError extends Error {
   constructor(message: string, details: APITestErrorDetails) {
     super(message);
     this.name = "APITestError";
-    this.details = details;
+    this.details = {
+      errorName: details.errorName,
+      errorMessage: details.statusCode
+        ? `HTTP ${details.statusCode}`
+        : getString("security-request-failed"),
+      statusCode: details.statusCode,
+      requestUrl: (() => {
+        try {
+          return new URL(details.requestUrl).origin;
+        } catch {
+          return "[invalid URL]";
+        }
+      })(),
+      requestBody: "[omitted for privacy]",
+    };
   }
 
   // 格式化为用户友好的错误报告

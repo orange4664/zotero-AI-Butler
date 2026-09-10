@@ -1,3 +1,4 @@
+import { secureRequest } from "../../utils/secureRequest";
 import { ILlmProvider, PdfFileInfo } from "./ILlmProvider";
 import {
   ConversationMessage,
@@ -140,7 +141,7 @@ export class VolcanoArkProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
@@ -353,7 +354,7 @@ export class VolcanoArkProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
@@ -558,7 +559,7 @@ export class VolcanoArkProvider implements ILlmProvider {
     let response: any;
     const responseHeaders: Record<string, string> = {};
     try {
-      response = await Zotero.HTTP.request("POST", url, {
+      response = await secureRequest("POST", url, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
@@ -872,7 +873,7 @@ export class VolcanoArkProvider implements ILlmProvider {
     let cleanupAbortSignal: (() => void) | undefined;
 
     try {
-      await Zotero.HTTP.request("POST", endpoint, {
+      await secureRequest("POST", endpoint, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,

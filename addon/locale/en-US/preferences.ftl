@@ -21,18 +21,18 @@ ai-butler-prefpane-open-dashboard =
 ai-butler-prefpane-open-dashboard-help = Click the button above to open the main Butler UI. Configure APIs, prompts, and other options in the Settings tab.
 
 # Settings: model platform and endpoints
-settings-nav-model-platform = 🧩 Model Platforms
-settings-nav-api = 🔌 API Configuration
-settings-nav-summary-prompt = 📝 AI Summary Prompt
-settings-nav-deep-read-prompt = 📚 AI Deep Reading Prompt
-settings-nav-table-prompt = 📊 Table Summary Prompt
-settings-nav-mindmap = 🧠 Mind Map
-settings-nav-image-summary = 🖼️ One-image Summary
-settings-nav-note-export = 📤 Auto Note Export
-settings-nav-ui = 🎨 Interface Settings
-settings-nav-data = 💾 Data Management
-settings-nav-about = ℹ️ About
-settings-model-platform-title = 🧩 Model Platforms
+settings-nav-model-platform = Model Platforms
+settings-nav-api = API Configuration
+settings-nav-summary-prompt = AI Summary Prompt
+settings-nav-deep-read-prompt = AI Deep Reading Prompt
+settings-nav-table-prompt = Table Summary Prompt
+settings-nav-mindmap = Mind Map
+settings-nav-image-summary = One-image Summary
+settings-nav-note-export = Auto Note Export
+settings-nav-ui = Interface Settings
+settings-nav-data = Data Management
+settings-nav-about = About
+settings-model-platform-title = Model Platforms
 settings-model-platform-description = Add and manage one or more LLM providers. Configure provider type, API URL, API key, model, routing strategy, maximum API request count, and multi-model summaries here.
 endpoint-reasoning-default = Default: use the model default behavior without extra configuration
 endpoint-reasoning-none = Off: disable reasoning
@@ -114,7 +114,7 @@ endpoint-copy-failed = Copy failed. Select the details text manually.
 endpoint-copy-success = Test details copied
 
 # Settings: data management
-settings-data-title = 💾 Data Management
+settings-data-title = Data Management
 settings-data-description = Tools for clearing the task queue, importing/exporting settings, and restoring defaults.
 settings-data-stat-total = Total Tasks
 settings-data-stat-completed = Completed
@@ -147,7 +147,7 @@ settings-data-clear-empty-done = ✅ Scanned { $scanned } papers and deleted { $
 settings-data-operation-failed = ❌ Operation failed: { $message }
 
 # Settings: mind map
-settings-mindmap-title = 🧠 Mind Map Settings
+settings-mindmap-title = Mind Map Settings
 settings-mindmap-description = Configure the prompt template and export path for mind map generation. Custom prompts can change the mind map structure and content style.
 settings-mindmap-prompt-section = 📝 Prompt Template
 settings-mindmap-prompt-notice = The prompt determines the mind map structure. The default includes four major categories: research background, research methods, key findings, and conclusions. You can freely edit it. Leave it empty to use the default template.
@@ -255,7 +255,7 @@ endpoint-pdf-mineru-short = MinerU
 endpoint-effective-pdf-mode = Actual: { $mode }
 
 # Settings: note export
-settings-note-export-title = 📤 Auto Note Export
+settings-note-export-title = Auto Note Export
 settings-note-export-subtitle = After papers in watched collections have AI Summary and AI Deep Reading notes, automatically organize attachments, DOCX, and Markdown files into the target folder.
 settings-note-export-watched-collections = Watched Collections
 settings-note-export-include-subcollections-short = Includes subcollections
@@ -311,9 +311,9 @@ settings-note-export-no-format-selected = No format selected
 settings-note-export-progress-title = AI Note Export
 
 # Settings: image summary
-settings-image-summary-title = 🖼️ One-image Summary Settings
+settings-image-summary-title = One-image Summary Settings
 settings-image-summary-description = One-image Summary uses an image-generation model to create an academic concept poster for a paper. It supports the native Gemini API and OpenAI-compatible APIs. Start with a preset, then fine-tune API and generation parameters as needed.
-settings-image-summary-api-title = 🔌 API Connection
+settings-image-summary-api-title = API Connection
 settings-image-summary-api-description = Enter the service URL, key, and model used for image generation. For first-time setup, choose a common service preset above.
 settings-image-summary-request-mode-gemini = Native Gemini API (x-goog-api-key)
 settings-image-summary-request-mode-openai = OpenAI-compatible API (Bearer)
@@ -329,7 +329,7 @@ settings-image-summary-model = Image Model
 settings-image-summary-model-help = Gemini recommends gemini-3-pro-image-preview. OpenAI-compatible image generation can use models such as gpt-image-2, agnes-image-2.1-flash, or qwen-image-2.0.
 settings-image-summary-timeout = Image request timeout (seconds)
 settings-image-summary-timeout-help = Timeout for the second-stage image generation request. Default: 600 seconds (10 minutes). Minimum: 30 seconds.
-settings-image-summary-generation-title = ⚙️ Generation Options
+settings-image-summary-generation-title = Generation Options
 settings-image-summary-generation-description = Control the image text language, aspect ratio, and resolution. When using a compatible service, disable advanced parameters first to verify the API.
 settings-image-summary-language = Image Language
 settings-image-summary-language-help = Text language shown in generated images.
@@ -347,7 +347,7 @@ settings-image-summary-disabled = Disabled
 settings-image-summary-enabled = Enabled
 settings-image-summary-auto-add = Automatically add one-image summaries
 settings-image-summary-auto-add-help = ⚠️ When enabled, a one-image summary is generated automatically after a paper's AI Summary completes. This may consume significant API quota and cost.
-settings-image-summary-prompt-title = 📝 Prompt Configuration
+settings-image-summary-prompt-title = Prompt Configuration
 settings-image-summary-prompt-description = These prompts decide what the image says and how it says it. Keep the defaults unless you need a fixed style.
 settings-image-summary-available-variables = 📌 <strong>Available variables</strong>: <code>context</code> paper content, <code>title</code> paper title, <code>language</code> language setting, <code>summaryForImage</code> visual summary result
 settings-image-summary-visual-prompt = Visual Information Extraction Prompt
@@ -398,7 +398,7 @@ settings-image-summary-preview = Preview: { $endpoint }
 settings-image-summary-toggle-key = Show/hide key
 
 # Settings: UI
-settings-ui-title = 🎨 Interface Settings
+settings-ui-title = Interface Settings
 settings-ui-description = Interface and behavior settings: auto-scroll, auto-scan, and strategies for existing AI Summary / AI Deep Reading notes.
 settings-ui-auto-scroll = Auto-scroll to latest output
 settings-ui-auto-scroll-help = Automatically scroll to the bottom of the output window while generating notes
@@ -474,7 +474,7 @@ settings-ui-sidebar-module-quickChat-label = Quick Question
 settings-ui-sidebar-module-quickChat-description = Ask temporary follow-up questions about the current paper in the sidebar
 
 # About settings page
-settings-about-title = ℹ️ About
+settings-about-title = About
 settings-about-open-tutorial = 🎓 Open Onboarding Tutorial
 settings-about-quote-line-1 = Papers are easy to collect; reading them is the real challenge.
 settings-about-quote-line-2 = When academic prose gets dense, AI Butler digests it into something usable.
@@ -516,7 +516,7 @@ settings-prompts-language-auto = Follow Zotero language
 settings-prompts-language-zh = Chinese
 settings-prompts-language-en = English
 settings-prompts-language-saved = Default prompt language saved.
-settings-prompts-multi-round-title = 📋 AI Deep Reading Multi-round Prompt Templates
+settings-prompts-multi-round-title = AI Deep Reading Multi-round Prompt Templates
 settings-prompts-new-preset = ✨ New Preset
 settings-prompts-restore-builtins = ♻️ Restore Built-in Presets
 settings-prompts-save-current-template = 💾 Save Current Template
@@ -532,9 +532,9 @@ settings-prompts-restore-builtins-noop = No built-in preset has been modified.
 settings-prompts-restore-builtins-dialog-title = Restore Built-in Presets
 settings-prompts-restore-builtins-dialog-message = The following modified built-in presets will be restored to the system defaults: { $names } Custom presets with other names will not be changed. Continue?
 settings-prompts-restore-builtins-done = Built-in presets restored.
-settings-prompts-template-library-title = 🧩 Template Library
+settings-prompts-template-library-title = Template Library
 settings-prompts-template-library-subtitle = Choose, create, delete, or restore summary prompt presets. Selection is applied instantly.
-settings-prompts-editor-panel-title = ✍️ Template Editor
+settings-prompts-editor-panel-title = Template Editor
 settings-prompts-editor-panel-subtitle = Edit the active preset. Built-in default is read-only; other presets can be saved in place.
 settings-prompts-select-preset-label = Select Preset
 settings-prompts-select-preset-help = Switching presets applies them immediately. The editor always shows the active summary prompt.
@@ -749,9 +749,9 @@ settings-api-reset-global-title = Reset API Configuration
 settings-api-reset-global-confirm = Reset global API configuration to defaults? Model Platform, provider keys, and routing settings will not be reset.
 settings-api-reset-legacy-title = Reset Settings
 settings-api-reset-legacy-confirm = Reset to default settings?
-settings-api-page-title = 🔌 API Configuration
-settings-api-schedule-section-title = 📅 Scheduling
-settings-api-pdf-section-title = 📄 PDF Processing
+settings-api-page-title = API Configuration
+settings-api-schedule-section-title = Scheduling
+settings-api-pdf-section-title = PDF Processing
 settings-api-mineru-section-title = MinerU Parsing
 settings-api-mineru-section-subtitle = Shared when MinerU is selected globally or for an individual model
 settings-api-key-short-label = Key { $index }

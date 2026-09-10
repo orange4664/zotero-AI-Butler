@@ -21,22 +21,22 @@ menuitem-fillTable = AI Butler Fill Table
 menuitem-clearCollectionAiNotes = Clear AI Butler Notes in Collection
 
 # Dashboard
-dashboard-title = 📊 Dashboard
-dashboard-status-idle = AI Butler is resting
-dashboard-status-idle-detail = The butler has summarized { $count } papers
-dashboard-status-working = AI Butler is working hard
+dashboard-title = Overview
+dashboard-status-idle = Ready to read
+dashboard-status-idle-detail = { $count } papers summarized. Start your next reading task.
+dashboard-status-working = Reading your papers
 dashboard-status-reading = Reading: { $title }{ $remaining }
 dashboard-status-remaining =  ({ $count } papers remaining)
 dashboard-status-processing = Processing papers...
-dashboard-status-error = AI Butler ran into a problem
-dashboard-status-error-detail = Check your configuration or error logs
+dashboard-status-error = Tasks need attention
+dashboard-status-error-detail = Open the task queue to review failures and retry.
 dashboard-stat-total = Total processed
 dashboard-stat-today = Processed today
 dashboard-stat-pending = Pending
 dashboard-stat-success-rate = Success rate
 dashboard-stat-average-time = Average time
 dashboard-stat-failed = Failures
-dashboard-quick-actions = ⚡ Quick Actions
+dashboard-quick-actions = Quick Actions
 dashboard-action-scan-summary = Scan summaries
 dashboard-action-scan-deep-read = Scan deep reads
 dashboard-action-start-auto-scan = Auto scan
@@ -44,9 +44,9 @@ dashboard-action-pause-auto-scan = Pause scan
 dashboard-action-task-queue = Task queue
 dashboard-action-clear-completed = Clear done
 dashboard-action-open-settings = Settings
-dashboard-action-setup = Setup
-dashboard-action-onboarding = Tutorial
-dashboard-recent-activities = 🕒 Recent Activity
+dashboard-action-setup = Set up models
+dashboard-action-onboarding = Getting started
+dashboard-recent-activities = Recent Activity
 dashboard-no-recent-activities = No recent activity
 dashboard-time-now = Just now
 dashboard-time-minutes = { $count } minutes ago
@@ -1139,3 +1139,16 @@ llm-warning-attachment-as-text = This attachment will be analyzed as text conten
 llm-warning-auto-continuation-used = Output was truncated and automatically continued { $count } round(s).
 llm-warning-auto-continuation-still-truncated = Output is still truncated after { $count } automatic continuation round(s). Consider increasing Max Tokens, or using a non-reasoning model / lower reasoning effort.
 llm-warning-auto-continuation-disabled = Output was truncated, but auto-continuation rounds is set to 0, so no extra API call was made.
+
+# Safe settings transfer
+settings-data-transfer-notice = Exports exclude API keys. After importing, enter your keys and enable the models you need. Automatic scanning stays off.
+settings-data-import-safe-prompt = Paste settings JSON. Keys are not imported. Imported models and automatic scanning are disabled; changing an API URL clears its old key.
+settings-data-import-safe-success = Settings imported. Review model URLs, enter keys, then enable models and automatic scanning manually.
+settings-data-export-invalid = Could not export. Check your model configuration and API URLs first.
+
+# Security boundary errors
+security-invalid-settings = Invalid settings. Check the JSON fields, types, model URLs and allowed ranges.
+security-invalid-export = Invalid export. Only bounded PNG or OPML content with a safe filename is supported.
+security-invalid-endpoint = Use a valid HTTPS API URL without embedded credentials or fragments. HTTP is allowed only on loopback addresses.
+security-request-failed = Request failed. Check the API URL, connection and credentials. Redirects are not followed.
+security-import-rollback = Import failed. Previous settings were restored.
